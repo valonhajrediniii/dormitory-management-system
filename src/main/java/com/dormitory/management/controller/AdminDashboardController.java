@@ -169,6 +169,44 @@ public class AdminDashboardController {
         SceneManager.switchTo("login.fxml", "Dormitory Management System - Login");
     }
 
+    private void configurePendingTable() {
+        studentNameColumn.setCellValueFactory(new PropertyValueFactory<>("studentName"));
+        studentEmailColumn.setCellValueFactory(new PropertyValueFactory<>("studentEmail"));
+        facultyColumn.setCellValueFactory(new PropertyValueFactory<>("faculty"));
+        yearColumn.setCellValueFactory(new PropertyValueFactory<>("yearOfStudy"));
+        dateColumn.setCellValueFactory(cellData -> {
+            String value = cellData.getValue().getApplicationDate() == null
+                    ? "-"
+                    : cellData.getValue().getApplicationDate().format(DATE_TIME_FORMATTER);
+            return new javafx.beans.property.SimpleStringProperty(value);
+        });
+    }
+
+    private void configureAcceptedTable() {
+        acceptedStudentNameColumn.setCellValueFactory(new PropertyValueFactory<>("studentName"));
+        acceptedStudentEmailColumn.setCellValueFactory(new PropertyValueFactory<>("studentEmail"));
+        acceptedFacultyColumn.setCellValueFactory(new PropertyValueFactory<>("faculty"));
+        acceptedYearColumn.setCellValueFactory(new PropertyValueFactory<>("yearOfStudy"));
+        acceptedDormitoryColumn.setCellValueFactory(new PropertyValueFactory<>("dormitoryNumber"));
+        acceptedRoomColumn.setCellValueFactory(new PropertyValueFactory<>("roomNumber"));
+        acceptedDateColumn.setCellValueFactory(cellData -> {
+            String value = cellData.getValue().getApplicationDate() == null
+                    ? "-"
+                    : cellData.getValue().getApplicationDate().format(DATE_TIME_FORMATTER);
+            return new javafx.beans.property.SimpleStringProperty(value);
+        });
+    }
+
+    private void loadPendingApplications() {
+        List<PendingApplicationView> rows = adminService.getPendingApplications();
+        applicationsTable.setItems(FXCollections.observableArrayList(rows));
+    }
+
+    private void loadAcceptedStudents() {
+        List<AcceptedStudentView> rows = adminService.getAcceptedStudents();
+        acceptedStudentsTable.setItems(FXCollections.observableArrayList(rows));
+    }
+
 
 
 
