@@ -206,9 +206,65 @@ public class AdminDashboardController {
         List<AcceptedStudentView> rows = adminService.getAcceptedStudents();
         acceptedStudentsTable.setItems(FXCollections.observableArrayList(rows));
     }
+    private void loadRooms() {
+        List<RoomOption> options = adminService.getAssignableRooms().stream()
+                .map(room -> new RoomOption(
+                        room.getId(),
+                        room.getDormName(),
+                        room.getRoomNumber(),
+                        room.getCapacity(),
+                        room.getOccupiedBeds()))
+                .toList();
+        roomSelector.setItems(FXCollections.observableArrayList(options));
+        roomSelector.getSelectionModel().clearSelection();
+        roomDetailsLabel.setText("Select a room to view details.");
+    }
 
+    private void configureComplaintsTable() {
+        complaintDormitoryColumn.setCellValueFactory(cellData -> {
+            String dormitory = cellData.getValue().getDormitoryNumber();
+            return new javafx.beans.property.SimpleStringProperty(
+                    dormitory == null || dormitory.isBlank() ? "Not assigned" : dormitory);
+        });
+        complaintMessageColumn.setCellValueFactory(new PropertyValueFactory<>("message"));
+        complaintDateColumn.setCellValueFactory(cellData -> {
+            String value = cellData.getValue().getCreatedAt() == null
+                    ? "-"
+                    : cellData.getValue().getCreatedAt().format(DATE_TIME_FORMATTER);
+            return new javafx.beans.property.SimpleStringProperty(value);
+        });
+    }
 
+    private void loadComplaints() {
+        List<AdminComplaintView> rows = adminService.getComplaintsForAdmin();
+        complaintsTable.setItems(FXCollections.observableArrayList(rows));
+    }
 
+    private void refreshAll() {
+        loadPendingApplications();
+        loadAcceptedStudents();
+        loadComplaints();
+        loadRooms();
+    }
 
+    private static class RoomOption {
+        private final Long roomId;
+        private final String dormName;
+        private final String roomNumber;
+        private final int capacity;
+        private final int occupiedBeds;
 
+        private RoomOption(Long roomId, String dormName, String roomNumber, int capacity, int occupiedBeds) {
+            this.roomId = roomId;
+            this.dormName = dormName;
+            this.roomNumber = roomNumber;
+            this.capacity = capacity;
+            this.occupiedBeds = occupiedBeds;
+        }
+
+        @Override
+        public String toString() {
+            return dormName + " - Room " + roomNumber + " (" + occupiedBeds + "/" + capacity + ")";
+        }
+    }
 }
