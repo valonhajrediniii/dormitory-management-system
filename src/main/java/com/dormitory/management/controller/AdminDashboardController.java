@@ -46,6 +46,76 @@ public class AdminDashboardController {
     @FXML
     private TableColumn<PendingApplicationView, String> dateColumn;
 
+    @FXML
+    private TableView<AcceptedStudentView> acceptedStudentsTable;
+
+    @FXML
+    private TableColumn<AcceptedStudentView, String> acceptedStudentNameColumn;
+
+    @FXML
+    private TableColumn<AcceptedStudentView, String> acceptedStudentEmailColumn;
+
+    @FXML
+    private TableColumn<AcceptedStudentView, String> acceptedFacultyColumn;
+
+    @FXML
+    private TableColumn<AcceptedStudentView, Integer> acceptedYearColumn;
+
+    @FXML
+    private TableColumn<AcceptedStudentView, String> acceptedDormitoryColumn;
+
+    @FXML
+    private TableColumn<AcceptedStudentView, String> acceptedRoomColumn;
+
+    @FXML
+    private TableColumn<AcceptedStudentView, String> acceptedDateColumn;
+
+    @FXML
+    private ComboBox<RoomOption> roomSelector;
+
+    @FXML
+    private Label roomDetailsLabel;
+
+    @FXML
+    private TableView<AdminComplaintView> complaintsTable;
+
+    @FXML
+    private TableColumn<AdminComplaintView, String> complaintDormitoryColumn;
+
+    @FXML
+    private TableColumn<AdminComplaintView, String> complaintMessageColumn;
+
+    @FXML
+    private TableColumn<AdminComplaintView, String> complaintDateColumn;
+
+    @FXML
+    private void initialize() {
+        User user = UserSession.getCurrentUser();
+        if (user == null) {
+            AlertUtil.error("Session Expired", "Please login again.");
+            SceneManager.switchTo("login.fxml", "Dormitory Management System - Login");
+            return;
+        }
+
+        adminWelcomeLabel.setText("Admin: " + user.getFullName());
+        configurePendingTable();
+        configureAcceptedTable();
+        configureComplaintsTable();
+        loadPendingApplications();
+        loadAcceptedStudents();
+        loadComplaints();
+        loadRooms();
+
+        roomSelector.valueProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue == null) {
+                roomDetailsLabel.setText("Select a room to view details.");
+                return;
+            }
+            roomDetailsLabel.setText("Dormitory: " + newValue.dormName
+                    + " | Room: " + newValue.roomNumber
+                    + " | Capacity: " + newValue.occupiedBeds + "/" + newValue.capacity);
+        });
+    }
 
 
 
