@@ -117,6 +117,57 @@ public class AdminDashboardController {
         });
     }
 
+    @FXML
+    private void onApproveSelected() {
+        PendingApplicationView selected = applicationsTable.getSelectionModel().getSelectedItem();
+        RoomOption room = roomSelector.getValue();
+
+        if (selected == null) {
+            AlertUtil.error("Approve", "Select an application first.");
+            return;
+        }
+
+        if (room == null) {
+            AlertUtil.error("Approve", "Select a room before approving.");
+            return;
+        }
+
+        OperationResult result = adminService.approveApplication(selected.getApplicationId(), room.roomId);
+        if (result.isSuccess()) {
+            AlertUtil.info("Approve", result.getMessage());
+            refreshAll();
+        } else {
+            AlertUtil.error("Approve", result.getMessage());
+        }
+    }
+
+    @FXML
+    private void onRejectSelected() {
+        PendingApplicationView selected = applicationsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            AlertUtil.error("Reject", "Select an application first.");
+            return;
+        }
+
+        OperationResult result = adminService.rejectApplication(selected.getApplicationId());
+        if (result.isSuccess()) {
+            AlertUtil.info("Reject", result.getMessage());
+            refreshAll();
+        } else {
+            AlertUtil.error("Reject", result.getMessage());
+        }
+    }
+
+    @FXML
+    private void onRefreshData() {
+        refreshAll();
+    }
+
+    @FXML
+    private void onLogout() {
+        UserSession.clear();
+        SceneManager.switchTo("login.fxml", "Dormitory Management System - Login");
+    }
 
 
 
