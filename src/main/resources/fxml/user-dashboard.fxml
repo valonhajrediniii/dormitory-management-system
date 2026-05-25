@@ -79,3 +79,71 @@
                         </ScrollPane>
                     </content>
                 </Tab>
+
+                <Tab fx:id="applicationTab" text="Application">
+                    <content>
+                        <VBox spacing="14" styleClass="dashboard-card">
+                            <padding>
+                                <Insets top="20" right="24" bottom="20" left="24"/>
+                            </padding>
+                            <Label text="Dormitory Application" styleClass="section-label"/>
+                            <Label text="One active application per student is allowed." styleClass="subtitle-label"/>
+                            <Separator/>
+
+                            <TextArea fx:id="applicationNotesArea"
+                                      prefRowCount="8"
+                                      wrapText="true"
+                                      promptText="Write optional notes for your application"/>
+
+                            <HBox spacing="10">
+                                <Button text="Submit Application" onAction="#onSubmitApplication" styleClass="accent-button"/>
+                            </HBox>
+                        </VBox>
+                    </content>
+                </Tab>
+
+                <Tab text="Status">
+                    <content>
+                        <VBox spacing="16" styleClass="dashboard-card status-main-card">
+                            <padding>
+                                <Insets top="20" right="24" bottom="20" left="24"/>
+                            </padding>
+                            <Label text="Application Status" styleClass="section-label"/>
+                            <Label fx:id="statusMessageLabel" text="-" styleClass="subtitle-label"/>
+                            <Separator/>
+
+                            <HBox spacing="10" styleClass="status-info-row">
+                                <Label text="Current Status:" styleClass="field-label"/>
+                                <Label fx:id="applicationStatusLabel" styleClass="status-pill" text="-"/>
+                            </HBox>
+
+                            <HBox spacing="10" styleClass="status-info-row">
+                                <Label text="Submitted At:" styleClass="field-label"/>
+                                <Label fx:id="applicationDateLabel" text="-" styleClass="status-value"/>
+                            </HBox>
+
+                            <HBox spacing="10" styleClass="status-info-row">
+                                <Label text="Dormitory (1-8):" styleClass="field-label"/>
+                                <Label fx:id="dormitoryLabel" text="-" styleClass="status-value"/>
+                            </HBox>
+
+                            <HBox spacing="10" styleClass="status-info-row">
+                                <Label text="Room Number:" styleClass="field-label"/>
+                                <Label fx:id="roomLabel" text="-" styleClass="status-value"/>
+                            </HBox>
+
+                            <Separator/>
+
+                            <VBox spacing="6" alignment="CENTER_LEFT" styleClass="status-qr-box">
+                                <Label text="Acceptance Verification" styleClass="field-label"/>
+                                <ImageView fx:id="qrImageView" fitWidth="200" fitHeight="200" preserveRatio="false" managed="false" visible="false"/>
+                                <Label fx:id="qrHintLabel" text="QR code appears after acceptance." styleClass="subtitle-label"/>
+                            </VBox>
+
+                            <HBox spacing="10">
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Button text="Refresh Status" onAction="#onRefreshStatus" styleClass="outline-button"/>
+                            </HBox>
+                        </VBox>
+                    </content>
+                </Tab>
