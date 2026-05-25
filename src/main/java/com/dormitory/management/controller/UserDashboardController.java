@@ -275,3 +275,141 @@ public class UserDashboardController {
         }
         return result;
     }
+    private void loadApplicationStatus(long userId) {
+        Application application = applicationService.getByUserId(userId).orElse(null);
+        if (application == null) {
+            applicationStatusLabel.setText("No application submitted yet.");
+            updateStatusPillStyle(null);
+            applicationDateLabel.setText("-");
+            dormitoryLabel.setText("-");
+            roomLabel.setText("-");
+            statusMessageLabel.setText("Create your application when your profile is complete.");
+            showApplicationTab(true);
+            hideQr();
+            return;
+        }
+
+        applicationStatusLabel.setText(application.getStatus().name());
+        updateStatusPillStyle(application.getStatus());
+        applicationDateLabel.setText(application.getApplicationDate() == null
+                ? "-"
+                : application.getApplicationDate().format(DATE_TIME_FORMATTER));
+
+        if (application.getDormitoryNumber() != null && application.getRoomNumber() != null) {
+            dormitoryLabel.setText(application.getDormitoryNumber());
+            roomLabel.setText(application.getRoomNumber());
+        } else {
+            dormitoryLabel.setText("Not assigned yet");
+            roomLabel.setText("Not assigned yet");
+        }
+
+        if (application.getStatus() == ApplicationStatus.ACCEPTED) {
+            statusMessageLabel.setText("Accepted. Show the QR code for verification.");
+            showApplicationTab(false);
+            showQr();
+        } else if (application.getStatus() == ApplicationStatus.REJECTED) {
+            statusMessageLabel.setText("Rejected. You can apply again.");
+            showApplicationTab(true);
+            hideQr();
+        } else {
+            statusMessageLabel.setText("Pending review by the admin.");
+            showApplicationTab(false);
+            hideQr();
+        }
+    }
+
+    private void updateStatusPillStyle(ApplicationStatus status) {
+        applicationStatusLabel.getStyleClass().removeAll(STATUS_STYLE_CLASSES);
+
+        if (status == null) {
+            applicationStatusLabel.getStyleClass().add("status-pill-neutral");
+            return;
+        }
+
+        switch (status) {
+            case ACCEPTED -> applicationStatusLabel.getStyleClass().add("status-pill-accepted");
+            case REJECTED -> applicationStatusLabel.getStyleClass().add("status-pill-rejected");
+            case PENDING -> applicationStatusLabel.getStyleClass().add("status-pill-pending");
+            default -> applicationStatusLabel.getStyleClass().add("status-pill-neutral");
+        }
+    }
+
+    private void showApplicationTab(boolean show) {
+        boolean contains = dashboardTabPane.getTabs().contains(applicationTab);
+        if (show && !contains) {
+            dashboardTabPane.getTabs().add(1, applicationTab);
+        }
+        if (!show && contains) {
+            dashboardTabPane.getTabs().remove(applicationTab);
+        }
+    }
+
+    private void showQr() {
+        qrImageView.setImage(createQrImage(DUMMY_QR_PAYLOAD, 200, 200));
+        qrImageView.setVisible(true);
+        qrImageView.setManaged(true);
+        qrHintLabel.setText("Dummy verification QR (same data for all students)");
+    }
+
+    private void hideQr() {
+        qrImageView.setImage(null);
+        qrImageView.setVisible(false);
+        qrImageView.setManaged(false);
+        qrHintLabel.setText("QR code appears after acceptance.");
+    }
+
+    private WritableImage createQrImage(String payload, int width, int height) {
+        try {
+            QRCodeWriter writer = new QRCodeWriter();
+            BitMatrix matrix = writer.encode(payload, BarcodeFormat.QR_CODE, width, height);
+            WritableImage image = new WritableImage(width, height);
+
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    image.getPixelWriter().setColor(x, y, matrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                }
+            }
+            return image;
+        } catch (WriterException ex) {
+            return createPlaceholderAvatar();
+        }
+    }
+
+    private void updateProfileImage(String photoUrl) {
+        if (photoUrl == null || photoUrl.isBlank()) {
+            profileImageView.setImage(createPlaceholderAvatar());
+            return;
+        }
+
+        try {
+            String source = photoUrl.trim();
+            if (!source.startsWith("http://") && !source.startsWith("https://") && !source.startsWith("file:")) {
+                source = new File(source).toURI().toString();
+            }
+
+            Image image = new Image(source, true);
+            if (image.isError()) {
+                profileImageView.setImage(createPlaceholderAvatar());
+            } else {
+                profileImageView.setImage(image);
+            }
+        } catch (RuntimeException ex) {
+            profileImageView.setImage(createPlaceholderAvatar());
+        }
+    }
+
+    private WritableImage createPlaceholderAvatar() {
+        int size = 140;
+        WritableImage image = new WritableImage(size, size);
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
+                if (x < 6 || y < 6 || x >= size - 6 || y >= size - 6) {
+                    image.getPixelWriter().setColor(x, y, Color.web("#1e4d8a"));
+                } else {
+                    image.getPixelWriter().setColor(x, y, Color.web("#dbe8ff"));
+                }
+            }
+        }
+        return image;
+    }
+}
