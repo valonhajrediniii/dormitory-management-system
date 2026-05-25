@@ -127,3 +127,91 @@ public class UserDashboardController {
         loadProfile(currentUser.getId());
         loadApplicationStatus(currentUser.getId());
     }
+
+    @FXML
+    private void onSaveProfile() {
+        User user = UserSession.getCurrentUser();
+        if (user == null) {
+            AlertUtil.error("Session Expired", "Please login again.");
+            return;
+        }
+
+        OperationResult result = saveProfileForUser(user);
+        if (result.isSuccess()) {
+            AlertUtil.info("Profile", result.getMessage());
+        } else {
+            AlertUtil.error("Profile", result.getMessage());
+        }
+    }
+
+    @FXML
+    private void onPreviewPhoto() {
+        updateProfileImage(photoUrlField.getText());
+    }
+
+    @FXML
+    private void onChoosePhoto() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Choose Profile Photo");
+        chooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp", "*.webp")
+        );
+
+        String currentPath = photoUrlField.getText();
+        if (currentPath != null && !currentPath.isBlank()) {
+            File selected = new File(currentPath.trim());
+            File parent = selected.isDirectory() ? selected : selected.getParentFile();
+            if (parent != null && parent.exists()) {
+                chooser.setInitialDirectory(parent);
+            }
+        }
+
+        File file = chooser.showOpenDialog(photoUrlField.getScene().getWindow());
+        if (file == null) {
+            return;
+        }
+
+        photoUrlField.setText(file.getAbsolutePath());
+        updateProfileImage(file.getAbsolutePath());
+    }
+
+    @FXML
+    private void onSubmitApplication() {
+        User user = UserSession.getCurrentUser();
+        if (user == null) {
+            AlertUtil.error("Session Expired", "Please login again.");
+            return;
+        }
+
+        String notes = applicationNotesArea.getText();
+        if (notes != null && notes.length() > 1000) {
+            AlertUtil.error("Validation Error", "Application notes can have up to 1000 characters.");
+            return;
+        }
+
+        if (studentProfileService.getByUserId(user.getId()).isEmpty()) {
+            OperationResult saveResult = saveProfileForUser(user);
+            if (!saveResult.isSuccess()) {
+                AlertUtil.error("Application", "Please complete and save your profile before applying. " + saveResult.getMessage());
+                dashboardTabPane.getSelectionModel().select(0);
+                return;
+            }
+            AlertUtil.info("Profile", "Profile saved. You can now submit your application.");
+        }
+
+        OperationResult result = applicationService.submitApplication(user.getId(), notes);
+        if (result.isSuccess()) {
+            AlertUtil.info("Application", result.getMessage());
+            loadApplicationStatus(user.getId());
+        } else {
+            AlertUtil.error("Application", result.getMessage());
+        }
+    }
+
+    @FXML
+    private void onRefreshStatus() {
+        User user = UserSession.getCurrentUser();
+        if (user != null) {
+            loadApplicationStatus(user.getId());
+        }
+    }
