@@ -1,10 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
-<StackPane xmlns="http://javafx.com/javafx/21"
-           xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.dormitory.management.controller.UserDashboardController">
-    <Label text="User Dashboard (Starter)"/>
-</StackPane>
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.dormitory.management.controller.UserDashboardController"
+            prefWidth="1080"
+            prefHeight="720"
+            styleClass="root-pane">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="dashboard-topbar">
+            <padding>
+                <Insets top="18" right="26" bottom="18" left="26"/>
+            </padding>
+            <Label text="Student Dashboard" styleClass="dashboard-title"/>
+            <Label fx:id="welcomeLabel" styleClass="dashboard-subtitle"/>
+            <HBox HBox.hgrow="ALWAYS"/>
+            <Button text="Logout" onAction="#onLogout" styleClass="outline-button"/>
+        </HBox>
+    </top>
+
+    <center>
+        <TabPane fx:id="dashboardTabPane" tabClosingPolicy="UNAVAILABLE" styleClass="dashboard-tabs">
+            <tabs>
+                <Tab text="Profile">
+                    <content>
+                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="profile-scroll">
+                            <content>
+                                <VBox spacing="14" styleClass="dashboard-card">
+                                    <padding>
+                                        <Insets top="20" right="24" bottom="20" left="24"/>
+                                    </padding>
+                                    <Label text="Student ID Card" styleClass="section-label"/>
+                                    <Label text="Your student details are used for application validation." styleClass="subtitle-label"/>
+                                    <Separator/>
+
+                                    <HBox spacing="20" alignment="CENTER_LEFT">
+                                        <ImageView fx:id="profileImageView" fitHeight="140" fitWidth="140" preserveRatio="false" styleClass="profile-image"/>
+                                        <VBox spacing="8">
+                                            <Label text="Name &amp; Surname" styleClass="field-label"/>
+                                            <Label fx:id="profileNameLabel" text="-" styleClass="id-card-value"/>
+                                            <Label text="Student ID" styleClass="field-label"/>
+                                            <Label fx:id="profileStudentIdLabel" text="-" styleClass="id-card-value"/>
+                                        </VBox>
+                                    </HBox>
+
+                                    <TextField fx:id="facultyField" promptText="College Name"/>
+                                    <TextField fx:id="studyProgramField" promptText="What are you studying?"/>
+                                    <TextField fx:id="yearOfStudyField" promptText="Year of Study (1-6)"/>
+                                    <TextField fx:id="genderField" promptText="Gender"/>
+                                    <TextField fx:id="phoneField" promptText="Phone"/>
+                                    <TextField fx:id="cityField" promptText="City"/>
+                                    <TextField fx:id="photoUrlField"
+                                               promptText="Photo URL or local file path"
+                                               onMouseClicked="#onChoosePhoto"/>
+
+                                    <HBox spacing="10">
+                                        <Button text="Browse Photo" onAction="#onChoosePhoto" styleClass="outline-button"/>
+                                        <Button text="Preview Photo" onAction="#onPreviewPhoto" styleClass="outline-button"/>
+                                        <Button text="Save Profile" onAction="#onSaveProfile" styleClass="primary-button"/>
+                                    </HBox>
+                                </VBox>
+                            </content>
+                        </ScrollPane>
+                    </content>
+                </Tab>
