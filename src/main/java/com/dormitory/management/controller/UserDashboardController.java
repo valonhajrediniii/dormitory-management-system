@@ -215,3 +215,63 @@ public class UserDashboardController {
             loadApplicationStatus(user.getId());
         }
     }
+    @FXML
+    private void onSubmitComplaint() {
+        User user = UserSession.getCurrentUser();
+        if (user == null) {
+            AlertUtil.error("Session Expired", "Please login again.");
+            return;
+        }
+
+        OperationResult result = complaintService.submitComplaint(user.getId(), complaintMessageArea.getText());
+        if (result.isSuccess()) {
+            AlertUtil.info("Complaint", result.getMessage());
+            complaintMessageArea.clear();
+        } else {
+            AlertUtil.error("Complaint", result.getMessage());
+        }
+    }
+
+    @FXML
+    private void onLogout() {
+        UserSession.clear();
+        SceneManager.switchTo("login.fxml", "Dormitory Management System - Login");
+    }
+
+    private void loadProfile(long userId) {
+        studentProfileService.getByUserId(userId).ifPresent(profile -> {
+            facultyField.setText(profile.getFaculty());
+            studyProgramField.setText(profile.getStudyProgram());
+            yearOfStudyField.setText(String.valueOf(profile.getYearOfStudy()));
+            genderField.setText(profile.getGender());
+            phoneField.setText(profile.getPhone());
+            cityField.setText(profile.getCity());
+            photoUrlField.setText(profile.getPhotoUrl());
+            updateProfileImage(profile.getPhotoUrl());
+        });
+    }
+
+    private OperationResult saveProfileForUser(User user) {
+        int yearOfStudy;
+        try {
+            yearOfStudy = Integer.parseInt(yearOfStudyField.getText().trim());
+        } catch (NumberFormatException ex) {
+            return OperationResult.failure("Year of study must be a number between 1 and 6.");
+        }
+
+        StudentProfile profile = new StudentProfile();
+        profile.setUserId(user.getId());
+        profile.setFaculty(facultyField.getText() == null ? "" : facultyField.getText().trim());
+        profile.setStudyProgram(studyProgramField.getText() == null ? "" : studyProgramField.getText().trim());
+        profile.setYearOfStudy(yearOfStudy);
+        profile.setGender(genderField.getText() == null ? "" : genderField.getText().trim());
+        profile.setPhone(phoneField.getText() == null ? "" : phoneField.getText().trim());
+        profile.setCity(cityField.getText() == null ? "" : cityField.getText().trim());
+        profile.setPhotoUrl(photoUrlField.getText() == null ? "" : photoUrlField.getText().trim());
+
+        OperationResult result = studentProfileService.saveProfile(profile);
+        if (result.isSuccess()) {
+            updateProfileImage(profile.getPhotoUrl());
+        }
+        return result;
+    }
