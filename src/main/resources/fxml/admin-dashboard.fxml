@@ -79,3 +79,50 @@
                         </HBox>
                     </content>
                 </Tab>
+
+
+                <Tab text="All Students (Accepted)">
+                    <content>
+                        <VBox spacing="12" styleClass="dashboard-card">
+                            <padding>
+                                <Insets top="20" right="22" bottom="20" left="22"/>
+                            </padding>
+                            <Label text="Accepted Students" styleClass="section-label"/>
+                            <TableView fx:id="acceptedStudentsTable" prefHeight="560">
+                                <columns>
+                                    <TableColumn fx:id="acceptedStudentNameColumn" text="Student" prefWidth="190"/>
+                                    <TableColumn fx:id="acceptedStudentEmailColumn" text="Email" prefWidth="230"/>
+                                    <TableColumn fx:id="acceptedFacultyColumn" text="Faculty" prefWidth="150"/>
+                                    <TableColumn fx:id="acceptedYearColumn" text="Year" prefWidth="80"/>
+                                    <TableColumn fx:id="acceptedDormitoryColumn" text="Dormitory" prefWidth="120"/>
+                                    <TableColumn fx:id="acceptedRoomColumn" text="Room" prefWidth="100"/>
+                                    <TableColumn fx:id="acceptedDateColumn" text="Accepted At" prefWidth="160"/>
+                                </columns>
+                            </TableView>
+                        </VBox>
+                    </content>
+                </Tab>
+
+                <Tab text="Complaints">
+                    <content>
+                        <VBox spacing="12" styleClass="dashboard-card">
+                            <padding>
+                                <Insets top="20" right="22" bottom="20" left="22"/>
+                            </padding>
+                            <Label text="Student Complaints" styleClass="section-label"/>
+                            <Label text="Admin can read complaints by dormitory. No response is required." styleClass="subtitle-label"/>
+                            <TableView fx:id="complaintsTable" prefHeight="560">
+                                <columns>
+                                    <TableColumn fx:id="complaintDormitoryColumn" text="Dormitory" prefWidth="150"/>
+                                    <TableColumn fx:id="complaintMessageColumn" text="Complaint" prefWidth="760"/>
+                                    <TableColumn fx:id="complaintDateColumn" text="Submitted" prefWidth="180"/>
+                                </columns>
+                            </TableView>
+                        </VBox>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </center>
+
+</BorderPane>
