@@ -147,3 +147,30 @@
                         </VBox>
                     </content>
                 </Tab>
+
+                <Tab text="Complaints">
+                    <content>
+                        <VBox spacing="14" styleClass="dashboard-card">
+                            <padding>
+                                <Insets top="20" right="24" bottom="20" left="24"/>
+                            </padding>
+                            <Label text="Dormitory Complaint" styleClass="section-label"/>
+                            <Label text="Write your complaint. It will be visible to the admin with your dormitory number only." styleClass="subtitle-label"/>
+                            <Separator/>
+
+                            <TextArea fx:id="complaintMessageArea"
+                                      prefRowCount="10"
+                                      wrapText="true"
+                                      promptText="Describe your complaint..."/>
+
+                            <HBox spacing="10">
+                                <Button text="Send Complaint" onAction="#onSubmitComplaint" styleClass="danger-button"/>
+                            </HBox>
+                        </VBox>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </center>
+
+</BorderPane>
