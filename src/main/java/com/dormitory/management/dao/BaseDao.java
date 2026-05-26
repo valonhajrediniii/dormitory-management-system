@@ -14,3 +14,5 @@ public interface BaseDao<T, ID> {
 
     void deleteById(ID id);
 }
+
+// This is a generic DAO interface that defines basic CRUD operations for any entity type T with an identifier of type ID. The methods include create, findById, findAll, update, and deleteById. Implementations of this interface will provide the actual database interactions for specific entities in the dormitory management system.//
