@@ -222,3 +222,63 @@
     -fx-text-fill: #1f3e69;
 }
 
+.status-qr-box {
+    -fx-background-color: #f8fbff;
+    -fx-background-radius: 12;
+    -fx-border-color: #d4e4fa;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-padding: 12;
+}
+
+.status-main-card {
+    -fx-padding: 20;
+    -fx-background-color: linear-gradient(to bottom right, rgba(255, 255, 255, 0.96), rgba(241, 248, 255, 0.96));
+}
+
+.status-info-row {
+    -fx-background-color: #f9fcff;
+    -fx-padding: 10 12 10 12;
+    -fx-background-radius: 10;
+    -fx-border-color: #e1ecfb;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+}
+
+.status-value {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #274c7a;
+}
+
+.danger-button {
+    -fx-background-color: linear-gradient(to right, #d6513f, #bc3928);
+    -fx-text-fill: white;
+}
+
+.danger-button:hover {
+    -fx-background-color: linear-gradient(to right, #e06252, #cb4736);
+}
+
+.table-view {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12;
+    -fx-border-color: #d3e0f5;
+    -fx-border-radius: 12;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #edf4ff;
+}
+
+.table-view .column-header,
+.table-view .filler {
+    -fx-size: 40px;
+    -fx-border-color: transparent transparent #d8e4f7 transparent;
+    -fx-background-color: transparent;
+}
+
+.table-view .table-row-cell:filled:selected {
+    -fx-background-color: #ddeafe;
+}
+
