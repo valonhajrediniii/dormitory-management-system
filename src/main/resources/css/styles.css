@@ -128,3 +128,157 @@
 .outline-button:hover {
     -fx-background-color: #eef4ff;
 }
+
+.dashboard-topbar {
+    -fx-background-color: rgba(255, 255, 255, 0.82);
+    -fx-border-color: #d4e2f8;
+    -fx-border-width: 0 0 1 0;
+}
+
+.dashboard-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #16315c;
+}
+
+.dashboard-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #41618e;
+}
+
+.dashboard-card {
+    -fx-background-color: rgba(255, 255, 255, 0.92);
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: #d7e3f8;
+    -fx-padding: 16;
+    -fx-effect: dropshadow(gaussian, rgba(21, 42, 78, 0.1), 18, 0.3, 0, 5);
+}
+
+.dashboard-tabs {
+    -fx-background-color: transparent;
+    -fx-padding: 20;
+}
+
+.dashboard-tabs > .tab-header-area > .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.dashboard-tabs .tab {
+    -fx-background-color: #e7eefc;
+    -fx-background-radius: 10 10 0 0;
+    -fx-padding: 8 14;
+}
+
+.dashboard-tabs .tab:selected {
+    -fx-background-color: #ffffff;
+}
+
+.field-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #314f78;
+}
+
+.status-pill {
+    -fx-padding: 6 14 6 14;
+    -fx-background-color: #e9f3ff;
+    -fx-background-radius: 999;
+    -fx-text-fill: #1d5aa0;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+.status-pill-pending {
+    -fx-background-color: #fff4d6;
+    -fx-text-fill: #8a5a09;
+}
+
+.status-pill-accepted {
+    -fx-background-color: #ddf8e7;
+    -fx-text-fill: #1c6d3a;
+}
+
+.status-pill-rejected {
+    -fx-background-color: #ffe1dc;
+    -fx-text-fill: #9a2e22;
+}
+
+.status-pill-neutral {
+    -fx-background-color: #e9f3ff;
+    -fx-text-fill: #1d5aa0;
+}
+
+.profile-image {
+    -fx-background-color: #f2f7ff;
+    -fx-background-radius: 14;
+    -fx-border-color: #bfd4f2;
+    -fx-border-width: 2;
+    -fx-border-radius: 14;
+}
+
+.id-card-value {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f3e69;
+}
+
+.status-qr-box {
+    -fx-background-color: #f8fbff;
+    -fx-background-radius: 12;
+    -fx-border-color: #d4e4fa;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-padding: 12;
+}
+
+.status-main-card {
+    -fx-padding: 20;
+    -fx-background-color: linear-gradient(to bottom right, rgba(255, 255, 255, 0.96), rgba(241, 248, 255, 0.96));
+}
+
+.status-info-row {
+    -fx-background-color: #f9fcff;
+    -fx-padding: 10 12 10 12;
+    -fx-background-radius: 10;
+    -fx-border-color: #e1ecfb;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+}
+
+.status-value {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #274c7a;
+}
+
+.danger-button {
+    -fx-background-color: linear-gradient(to right, #d6513f, #bc3928);
+    -fx-text-fill: white;
+}
+
+.danger-button:hover {
+    -fx-background-color: linear-gradient(to right, #e06252, #cb4736);
+}
+
+.table-view {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12;
+    -fx-border-color: #d3e0f5;
+    -fx-border-radius: 12;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #edf4ff;
+}
+
+.table-view .column-header,
+.table-view .filler {
+    -fx-size: 40px;
+    -fx-border-color: transparent transparent #d8e4f7 transparent;
+    -fx-background-color: transparent;
+}
+
+.table-view .table-row-cell:filled:selected {
+    -fx-background-color: #ddeafe;
+}
+
