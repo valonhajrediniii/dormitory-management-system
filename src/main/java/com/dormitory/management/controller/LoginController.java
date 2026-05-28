@@ -5,6 +5,7 @@ import com.dormitory.management.service.AuthService;
 import com.dormitory.management.service.JdbcAuthService;
 import com.dormitory.management.util.AlertUtil;
 import com.dormitory.management.util.SceneManager;
+import com.dormitory.management.util.UserSession;
 import com.dormitory.management.util.ValidationUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
@@ -31,6 +32,7 @@ public class LoginController {
 
         authService.login(email.trim(), password)
                 .ifPresentOrElse(user -> {
+                    UserSession.setCurrentUser(user);
                     if (user.getRole() == Role.ADMIN) {
                         SceneManager.switchTo("admin-dashboard.fxml", "Admin Dashboard");
                     } else {
