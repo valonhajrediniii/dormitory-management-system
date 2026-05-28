@@ -1,6 +1,6 @@
 # Dormitory Management System
 
-JavaFX desktop application scaffold focused on the technical foundation and basic authentication.
+JavaFX desktop application for dormitory admission workflow, including authentication, student application flow, and admin approval with room allocation.
 
 ## Stack
 - Java 21
@@ -10,16 +10,72 @@ JavaFX desktop application scaffold focused on the technical foundation and basi
 - Maven
 - JPMS (`module-info.java`)
 
-## Project Structure
-- `model`
-- `dao`
-- `service`
-- `controller`
-- `util`
+## First-Time Setup (Recommended Order)
+1. Clone the repository.
 
-## Run (CLI)
+```bash
+git clone https://github.com/valonhajrediniii/menaxhimikonviktev.git
+cd menaxhimikonviktev
+```
+
+2. Install Docker Desktop (or Docker Engine + Docker Compose plugin) and make sure Docker is running.
+
+3. Start database services (PostgreSQL + pgAdmin):
+
+```bash
+docker compose up -d
+```
+
+4. Start the JavaFX application:
+
+Windows (PowerShell/CMD):
+```powershell
+.\mvnw.cmd clean javafx:run
+```
+
+Git Bash:
+```bash
+./mvnw clean javafx:run
+```
+
+If you already have Maven installed globally, you can also use:
+
 ```bash
 mvn clean javafx:run
+```
+
+## Implemented Scope (MVP)
+
+### Activity 1: Foundation + Auth
+- Layered project structure (`model`, `dao`, `service`, `controller`, `util`)
+- PostgreSQL connectivity via `database.properties` or environment variables
+- Startup schema initialization from `src/main/resources/db/init.sql`
+- Login/register with role-based routing (`ADMIN`, `USER`)
+- Password hashing for new registrations and legacy plaintext auto-migration on login
+
+### Activity 2: Student Application Module
+- Student dashboard with profile form (faculty, year, gender, phone, city)
+- Profile persistence (`student_profiles`)
+- Application submission (`applications`) with rule enforcement for active requests
+- Application status tab for students
+
+### Activity 3: Admin Review + Room Allocation
+- Admin dashboard listing pending applications
+- Approve/reject actions
+- Room allocation on approval with occupancy and status update (`FREE`, `PARTIAL`, `FULL`)
+- Seed dormitories/rooms for immediate testing
+
+## Run (CLI)
+Preferred (this project includes Maven Wrapper):
+
+Windows (PowerShell/CMD):
+```powershell
+.\mvnw.cmd clean javafx:run
+```
+
+Git Bash:
+```bash
+./mvnw clean javafx:run
 ```
 
 ## Run Database With Docker
@@ -44,10 +100,18 @@ Services:
 	- Email: admin@dormitory.local
 	- Password: admin
 
+Default admin login in application:
+- Email: `admin@dormitory.local`
+- Password: `admin123`
+
 ## Run (IntelliJ)
 1. Open as Maven project.
 2. Let IntelliJ import dependencies.
-3. Run Maven goal `javafx:run` or run `com.dormitory.management.DormitoryApp`.
+3. Use the shared run configuration `Run JavaFX (Maven)` (from `.run/`) or run Maven goal `javafx:run`.
+
+If you run `com.dormitory.management.DormitoryApp` as a plain Application config, IntelliJ may show:
+`JavaFX runtime components are missing`.
+Use Maven run instead so JavaFX modules/native libraries are added automatically.
 
 ## Database Configuration
 Default config file:
@@ -60,11 +124,24 @@ Environment variables override file values:
 
 At startup, the application verifies database connectivity and initializes the core authentication schema (`users` table + default admin seed) if missing.
 
-## Scope
-Current implementation covers only Activity 1:
-- project structure and layered architecture
-- database connectivity and configuration
-- Docker/Maven setup
-- base login/register flow with roles
+Now startup initializes the full MVP schema and seed data from `init.sql`.
 
-Business features for applications, room allocation, complaints, tickets, and notifications are intentionally not implemented yet.
+## MVP User Flow
+
+### Student Flow
+1. Register a new USER account.
+2. Login as that user.
+3. In `Profile` tab, save student profile.
+4. In `Application` tab, submit dormitory application.
+5. In `Status` tab, track state (`PENDING`, `ACCEPTED`, `REJECTED`).
+
+### Admin Flow
+1. Login as admin (`admin@dormitory.local`).
+2. Open pending applications list.
+3. Select an application.
+4. Select an assignable room.
+5. Approve or reject.
+
+## Remaining Work
+- Activity 4: complaints, tickets/QR, notifications
+- Activity 5: full test suite, hardening, and final delivery documentation
