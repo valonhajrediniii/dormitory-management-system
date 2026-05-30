@@ -4,6 +4,7 @@ module com.dormitory.management {
     requires transitive javafx.graphics;
     requires transitive java.sql;
     requires org.postgresql.jdbc;
+    requires com.google.zxing;
 
     opens com.dormitory.management.controller to javafx.fxml;
     exports com.dormitory.management;
