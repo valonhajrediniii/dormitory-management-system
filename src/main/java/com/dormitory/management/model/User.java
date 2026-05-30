@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 public class User {
     private Long id;
     private String fullName;
+    private String studentId;
     private String email;
     private String password;
     private Role role;
@@ -13,9 +14,10 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String fullName, String email, String password, Role role, LocalDateTime createdAt) {
+    public User(Long id, String fullName, String studentId, String email, String password, Role role, LocalDateTime createdAt) {
         this.id = id;
         this.fullName = fullName;
+        this.studentId = studentId;
         this.email = email;
         this.password = password;
         this.role = role;
@@ -36,6 +38,14 @@ public class User {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
     }
 
     public String getEmail() {
