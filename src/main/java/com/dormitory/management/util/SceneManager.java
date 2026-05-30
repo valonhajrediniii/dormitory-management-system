@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 public final class SceneManager {
+    //Ruan stage kryesor qe perdoret per nderrimin e faqeve
     private static Stage primaryStage;
 
     private SceneManager() {
@@ -24,12 +25,14 @@ public final class SceneManager {
         }
 
         try {
+            //Ngarkon FXML-in dhe lidh Css per pamjen e re
             Parent root = FXMLLoader.load(Objects.requireNonNull(
                     SceneManager.class.getResource("/fxml/" + fxmlFileName)));
             Scene scene = new Scene(root);
             scene.getStylesheets().add(Objects.requireNonNull(
                     SceneManager.class.getResource("/css/styles.css")).toExternalForm());
 
+            //Nderron titullin dhe skenen aktuale
             primaryStage.setTitle(title);
             primaryStage.setScene(scene);
             primaryStage.show();
