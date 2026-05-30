@@ -62,17 +62,18 @@ public class JdbcAuthService implements AuthService {
      * PreparedStatement is used to pass user input safely into the SQL query.
      */
     @Override
-    public boolean register(String fullName, String email, String password) {
+    public boolean register(String fullName, String studentId, String email, String password) {
         String sql = """
-                INSERT INTO users (full_name, email, password, role)
-                VALUES (?, ?, ?, 'USER')
+                INSERT INTO users (full_name, student_id, email, password, role)
+                VALUES (?, ?, ?, ?, 'USER')
                 """;
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, fullName);
-            statement.setString(2, email);
-            statement.setString(3, password);
+            statement.setString(2, studentId);
+            statement.setString(3, email);
+            statement.setString(4, password);
 
             return statement.executeUpdate() == 1;
         } catch (SQLException | IllegalStateException ex) {

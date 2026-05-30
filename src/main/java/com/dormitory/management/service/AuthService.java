@@ -23,9 +23,10 @@ public interface AuthService {
      * Registers a new user account in the system.
      *
      * @param fullName user's full name
+     * @param studentId user's student identifier
      * @param email user's email address
      * @param password user's password
      * @return true if registration succeeds, otherwise false
      */
-    boolean register(String fullName, String email, String password);
+    boolean register(String fullName, String studentId, String email, String password);
 }
