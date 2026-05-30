@@ -25,6 +25,7 @@
         <VBox spacing="12" styleClass="auth-card register-card" prefWidth="390" maxWidth="390">
             <Label text="Register" styleClass="section-label"/>
             <TextField fx:id="fullNameField" promptText="Full Name"/>
+            <TextField fx:id="studentIdField" promptText="Student ID"/>
             <TextField fx:id="emailField" promptText="Email"/>
             <PasswordField fx:id="passwordField" promptText="Password (min 6)"/>
             <Button text="Create Account" onAction="#onRegister" styleClass="accent-button"/>
