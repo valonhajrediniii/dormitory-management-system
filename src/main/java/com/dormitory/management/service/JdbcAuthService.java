@@ -12,8 +12,16 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+/**
+ * JDBC-based implementation of the authentication service.
+ * This class communicates with the database to perform login and registration operations.
+ */
 public class JdbcAuthService implements AuthService {
 
+    /**
+     * Validates user credentials by checking the users table in the database.
+     * If a matching user is found, the database record is mapped into a User object.
+     */
     @Override
     public Optional<User> login(String email, String password) {
         String sql = """
@@ -49,6 +57,10 @@ public class JdbcAuthService implements AuthService {
         return Optional.empty();
     }
 
+    /**
+     * Inserts a new user record into the database with the default USER role.
+     * PreparedStatement is used to pass user input safely into the SQL query.
+     */
     @Override
     public boolean register(String fullName, String email, String password) {
         String sql = """
