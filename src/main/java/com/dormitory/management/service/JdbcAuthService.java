@@ -3,6 +3,7 @@ package com.dormitory.management.service;
 import com.dormitory.management.dao.DatabaseConnection;
 import com.dormitory.management.model.Role;
 import com.dormitory.management.model.User;
+import com.dormitory.management.util.PasswordUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,22 +28,26 @@ public class JdbcAuthService implements AuthService {
         String sql = """
                 SELECT id, full_name, email, password, role, created_at
                 FROM users
-                WHERE email = ? AND password = ?
+                WHERE email = ?
                 LIMIT 1
                 """;
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, email);
-            statement.setString(2, password);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
+                    String storedPassword = resultSet.getString("password");
+                    if (!PasswordUtil.matches(password, storedPassword)) {
+                        return Optional.empty();
+                    }
+
                     User user = new User();
                     user.setId(resultSet.getLong("id"));
                     user.setFullName(resultSet.getString("full_name"));
                     user.setEmail(resultSet.getString("email"));
-                    user.setPassword(resultSet.getString("password"));
+                    user.setPassword(storedPassword);
                     user.setRole(Role.valueOf(resultSet.getString("role")));
 
                     Timestamp createdAt = resultSet.getTimestamp("created_at");
@@ -70,10 +75,11 @@ public class JdbcAuthService implements AuthService {
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
+            String hashedPassword = PasswordUtil.hashPassword(password);
             statement.setString(1, fullName);
             statement.setString(2, studentId);
             statement.setString(3, email);
-            statement.setString(4, password);
+            statement.setString(4, hashedPassword);
 
             return statement.executeUpdate() == 1;
         } catch (SQLException | IllegalStateException ex) {
