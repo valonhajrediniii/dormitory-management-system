@@ -34,12 +34,12 @@ import java.util.List;
 public class UserDashboardController {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final String DUMMY_QR_PAYLOAD = "DORMITORY_ACCEPTED_DEMO_2026";
-    private static final List<String> STATUS_STYLE_CLASSES = List.of(
+        private static final List<String> STATUS_STYLE_CLASSES = List.of(
             "status-pill-pending",
             "status-pill-accepted",
             "status-pill-rejected",
             "status-pill-neutral"
-    );
+        );
 
     private final StudentProfileService studentProfileService = new StudentProfileService();
     private final ApplicationService applicationService = new ApplicationService();
@@ -215,6 +215,7 @@ public class UserDashboardController {
             loadApplicationStatus(user.getId());
         }
     }
+
     @FXML
     private void onSubmitComplaint() {
         User user = UserSession.getCurrentUser();
@@ -275,6 +276,7 @@ public class UserDashboardController {
         }
         return result;
     }
+
     private void loadApplicationStatus(long userId) {
         Application application = applicationService.getByUserId(userId).orElse(null);
         if (application == null) {
@@ -290,7 +292,7 @@ public class UserDashboardController {
         }
 
         applicationStatusLabel.setText(application.getStatus().name());
-        updateStatusPillStyle(application.getStatus());
+    updateStatusPillStyle(application.getStatus());
         applicationDateLabel.setText(application.getApplicationDate() == null
                 ? "-"
                 : application.getApplicationDate().format(DATE_TIME_FORMATTER));
