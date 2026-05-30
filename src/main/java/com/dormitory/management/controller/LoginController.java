@@ -22,14 +22,17 @@ public class LoginController {
 
     @FXML
     private void onLogin() {
+        //merr te dhenat e Login-it nga forma
         String email = loginEmailField.getText();
         String password = loginPasswordField.getText();
 
+        //Kontrollon nese email dhe password jane valide
         if (!ValidationUtil.isValidEmail(email) || !ValidationUtil.hasText(password)) {
             AlertUtil.error("Login Failed", "Please enter a valid email and password.");
             return;
         }
 
+        //Pas Login-it perdoruesi dergohet ne dashboard sipas rolit
         authService.login(email.trim(), password)
                 .ifPresentOrElse(user -> {
                     UserSession.setCurrentUser(user);
