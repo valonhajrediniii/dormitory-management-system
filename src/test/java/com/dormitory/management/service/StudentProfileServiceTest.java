@@ -18,7 +18,7 @@ class StudentProfileServiceTest {
 
         OperationResult result = service.saveProfile(profile);
         Assertions.assertFalse(result.isSuccess());
-        Assertions.assertTrue(result.getMessage().contains("Year of study"));
+        Assertions.assertEquals("service.profile.yearRange", result.getMessageKey());
     }
 
     @Test
@@ -29,6 +29,6 @@ class StudentProfileServiceTest {
 
         OperationResult result = service.saveProfile(profile);
         Assertions.assertFalse(result.isSuccess());
-        Assertions.assertTrue(result.getMessage().contains("Faculty"));
+        Assertions.assertEquals("service.profile.facultyRequired", result.getMessageKey());
     }
 }

@@ -4,10 +4,13 @@ import com.dormitory.management.model.Role;
 import com.dormitory.management.service.AuthService;
 import com.dormitory.management.service.JdbcAuthService;
 import com.dormitory.management.util.AlertUtil;
+import com.dormitory.management.util.I18n;
 import com.dormitory.management.util.SceneManager;
 import com.dormitory.management.util.UserSession;
 import com.dormitory.management.util.ValidationUtil;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
@@ -21,6 +24,15 @@ public class LoginController {
     private PasswordField loginPasswordField;
 
     @FXML
+    private ComboBox<String> languageComboBox;
+
+    @FXML
+    private void initialize() {
+        languageComboBox.setItems(FXCollections.observableArrayList(I18n.localizedLanguageOptions()));
+        languageComboBox.setValue(I18n.localizedLanguageForCurrentLocale());
+    }
+
+    @FXML
     private void onLogin() {
         //merr te dhenat e Login-it nga forma
         String email = loginEmailField.getText();
@@ -28,7 +40,7 @@ public class LoginController {
 
         //Kontrollon nese email dhe password jane valide
         if (!ValidationUtil.isValidEmail(email) || !ValidationUtil.hasText(password)) {
-            AlertUtil.error("Login Failed", "Please enter a valid email and password.");
+            AlertUtil.error(I18n.tr("alert.loginFailed.title"), I18n.tr("alert.loginFailed.invalidInput"));
             return;
         }
 
@@ -37,15 +49,26 @@ public class LoginController {
                 .ifPresentOrElse(user -> {
                     UserSession.setCurrentUser(user);
                     if (user.getRole() == Role.ADMIN) {
-                        SceneManager.switchTo("admin-dashboard.fxml", "Admin Dashboard");
+                        SceneManager.switchTo("admin-dashboard.fxml", "app.title.admin");
                     } else {
-                        SceneManager.switchTo("user-dashboard.fxml", "User Dashboard");
+                        SceneManager.switchTo("user-dashboard.fxml", "app.title.user");
                     }
-                }, () -> AlertUtil.error("Login Failed", "Invalid email or password."));
+                }, () -> AlertUtil.error(I18n.tr("alert.loginFailed.title"), I18n.tr("alert.loginFailed.invalidCredentials")));
     }
 
     @FXML
     private void onOpenRegister() {
-        SceneManager.switchTo("register.fxml", "Create Account");
+        SceneManager.switchTo("register.fxml", "app.title.register");
+    }
+
+    @FXML
+    private void onLanguageChanged() {
+        String value = languageComboBox.getValue();
+        if (value == null) {
+            return;
+        }
+
+        I18n.setLocale(I18n.localeFromSelection(value));
+        SceneManager.reloadCurrentScene();
     }
 }

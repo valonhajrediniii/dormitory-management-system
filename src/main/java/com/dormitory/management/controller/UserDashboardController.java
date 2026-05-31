@@ -12,10 +12,13 @@ import com.dormitory.management.service.ApplicationService;
 import com.dormitory.management.service.ComplaintService;
 import com.dormitory.management.service.StudentProfileService;
 import com.dormitory.management.util.AlertUtil;
+import com.dormitory.management.util.I18n;
 import com.dormitory.management.util.OperationResult;
 import com.dormitory.management.util.SceneManager;
 import com.dormitory.management.util.UserSession;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Label;
@@ -47,6 +50,9 @@ public class UserDashboardController {
 
     @FXML
     private Label welcomeLabel;
+
+    @FXML
+    private ComboBox<String> languageComboBox;
 
     @FXML
     private Label profileNameLabel;
@@ -115,14 +121,17 @@ public class UserDashboardController {
     private void initialize() {
         User currentUser = UserSession.getCurrentUser();
         if (currentUser == null) {
-            AlertUtil.error("Session Expired", "Please login again.");
-            SceneManager.switchTo("login.fxml", "Dormitory Management System - Login");
+            AlertUtil.error(I18n.tr("alert.sessionExpired.title"), I18n.tr("alert.sessionExpired.message"));
+            SceneManager.switchTo("login.fxml", "app.title.login");
             return;
         }
 
-        welcomeLabel.setText("Welcome, " + currentUser.getFullName());
+        languageComboBox.setItems(FXCollections.observableArrayList(I18n.localizedLanguageOptions()));
+        languageComboBox.setValue(I18n.localizedLanguageForCurrentLocale());
+
+        welcomeLabel.setText(I18n.tr("dashboard.user.welcome", currentUser.getFullName()));
         profileNameLabel.setText(currentUser.getFullName());
-        profileStudentIdLabel.setText(currentUser.getStudentId() == null ? "-" : currentUser.getStudentId());
+        profileStudentIdLabel.setText(currentUser.getStudentId() == null ? I18n.tr("status.none") : currentUser.getStudentId());
         profileImageView.setImage(createPlaceholderAvatar());
         loadProfile(currentUser.getId());
         loadApplicationStatus(currentUser.getId());
@@ -132,15 +141,15 @@ public class UserDashboardController {
     private void onSaveProfile() {
         User user = UserSession.getCurrentUser();
         if (user == null) {
-            AlertUtil.error("Session Expired", "Please login again.");
+            AlertUtil.error(I18n.tr("alert.sessionExpired.title"), I18n.tr("alert.sessionExpired.message"));
             return;
         }
 
         OperationResult result = saveProfileForUser(user);
         if (result.isSuccess()) {
-            AlertUtil.info("Profile", result.getMessage());
+            AlertUtil.info(I18n.tr("alert.profile.title"), trResult(result));
         } else {
-            AlertUtil.error("Profile", result.getMessage());
+            AlertUtil.error(I18n.tr("alert.profile.title"), trResult(result));
         }
     }
 
@@ -152,9 +161,9 @@ public class UserDashboardController {
     @FXML
     private void onChoosePhoto() {
         FileChooser chooser = new FileChooser();
-        chooser.setTitle("Choose Profile Photo");
+        chooser.setTitle(I18n.tr("user.profile.choosePhoto"));
         chooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp", "*.webp")
+            new FileChooser.ExtensionFilter(I18n.tr("user.profile.imageFiles"), "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp", "*.webp")
         );
 
         String currentPath = photoUrlField.getText();
@@ -179,32 +188,33 @@ public class UserDashboardController {
     private void onSubmitApplication() {
         User user = UserSession.getCurrentUser();
         if (user == null) {
-            AlertUtil.error("Session Expired", "Please login again.");
+            AlertUtil.error(I18n.tr("alert.sessionExpired.title"), I18n.tr("alert.sessionExpired.message"));
             return;
         }
 
         String notes = applicationNotesArea.getText();
         if (notes != null && notes.length() > 1000) {
-            AlertUtil.error("Validation Error", "Application notes can have up to 1000 characters.");
+            AlertUtil.error(I18n.tr("alert.validation.title"), I18n.tr("alert.application.notes.max", 1000));
             return;
         }
 
         if (studentProfileService.getByUserId(user.getId()).isEmpty()) {
             OperationResult saveResult = saveProfileForUser(user);
             if (!saveResult.isSuccess()) {
-                AlertUtil.error("Application", "Please complete and save your profile before applying. " + saveResult.getMessage());
+                AlertUtil.error(I18n.tr("alert.application.title"),
+                        I18n.tr("alert.application.profileRequired", trResult(saveResult)));
                 dashboardTabPane.getSelectionModel().select(0);
                 return;
             }
-            AlertUtil.info("Profile", "Profile saved. You can now submit your application.");
+            AlertUtil.info(I18n.tr("alert.profile.title"), I18n.tr("alert.profile.savedThenApply"));
         }
 
         OperationResult result = applicationService.submitApplication(user.getId(), notes);
         if (result.isSuccess()) {
-            AlertUtil.info("Application", result.getMessage());
+            AlertUtil.info(I18n.tr("alert.application.title"), trResult(result));
             loadApplicationStatus(user.getId());
         } else {
-            AlertUtil.error("Application", result.getMessage());
+            AlertUtil.error(I18n.tr("alert.application.title"), trResult(result));
         }
     }
 
@@ -220,23 +230,34 @@ public class UserDashboardController {
     private void onSubmitComplaint() {
         User user = UserSession.getCurrentUser();
         if (user == null) {
-            AlertUtil.error("Session Expired", "Please login again.");
+            AlertUtil.error(I18n.tr("alert.sessionExpired.title"), I18n.tr("alert.sessionExpired.message"));
             return;
         }
 
         OperationResult result = complaintService.submitComplaint(user.getId(), complaintMessageArea.getText());
         if (result.isSuccess()) {
-            AlertUtil.info("Complaint", result.getMessage());
+            AlertUtil.info(I18n.tr("alert.complaint.title"), trResult(result));
             complaintMessageArea.clear();
         } else {
-            AlertUtil.error("Complaint", result.getMessage());
+            AlertUtil.error(I18n.tr("alert.complaint.title"), trResult(result));
         }
     }
 
     @FXML
     private void onLogout() {
         UserSession.clear();
-        SceneManager.switchTo("login.fxml", "Dormitory Management System - Login");
+        SceneManager.switchTo("login.fxml", "app.title.login");
+    }
+
+    @FXML
+    private void onLanguageChanged() {
+        String value = languageComboBox.getValue();
+        if (value == null) {
+            return;
+        }
+
+        I18n.setLocale(I18n.localeFromSelection(value));
+        SceneManager.reloadCurrentScene();
     }
 
     private void loadProfile(long userId) {
@@ -257,7 +278,7 @@ public class UserDashboardController {
         try {
             yearOfStudy = Integer.parseInt(yearOfStudyField.getText().trim());
         } catch (NumberFormatException ex) {
-            return OperationResult.failure("Year of study must be a number between 1 and 6.");
+            return OperationResult.failure("service.profile.yearNumber");
         }
 
         StudentProfile profile = new StudentProfile();
@@ -280,41 +301,41 @@ public class UserDashboardController {
     private void loadApplicationStatus(long userId) {
         Application application = applicationService.getByUserId(userId).orElse(null);
         if (application == null) {
-            applicationStatusLabel.setText("No application submitted yet.");
+            applicationStatusLabel.setText(I18n.tr("user.status.none"));
             updateStatusPillStyle(null);
-            applicationDateLabel.setText("-");
-            dormitoryLabel.setText("-");
-            roomLabel.setText("-");
-            statusMessageLabel.setText("Create your application when your profile is complete.");
+            applicationDateLabel.setText(I18n.tr("status.none"));
+            dormitoryLabel.setText(I18n.tr("status.none"));
+            roomLabel.setText(I18n.tr("status.none"));
+            statusMessageLabel.setText(I18n.tr("user.status.noneMessage"));
             showApplicationTab(true);
             hideQr();
             return;
         }
 
-        applicationStatusLabel.setText(application.getStatus().name());
-    updateStatusPillStyle(application.getStatus());
+        applicationStatusLabel.setText(localizeStatus(application.getStatus()));
+        updateStatusPillStyle(application.getStatus());
         applicationDateLabel.setText(application.getApplicationDate() == null
-                ? "-"
+                ? I18n.tr("status.none")
                 : application.getApplicationDate().format(DATE_TIME_FORMATTER));
 
         if (application.getDormitoryNumber() != null && application.getRoomNumber() != null) {
             dormitoryLabel.setText(application.getDormitoryNumber());
             roomLabel.setText(application.getRoomNumber());
         } else {
-            dormitoryLabel.setText("Not assigned yet");
-            roomLabel.setText("Not assigned yet");
+            dormitoryLabel.setText(I18n.tr("user.status.notAssigned"));
+            roomLabel.setText(I18n.tr("user.status.notAssigned"));
         }
 
         if (application.getStatus() == ApplicationStatus.ACCEPTED) {
-            statusMessageLabel.setText("Accepted. Show the QR code for verification.");
+            statusMessageLabel.setText(I18n.tr("user.status.acceptedMessage"));
             showApplicationTab(false);
             showQr();
         } else if (application.getStatus() == ApplicationStatus.REJECTED) {
-            statusMessageLabel.setText("Rejected. You can apply again.");
+            statusMessageLabel.setText(I18n.tr("user.status.rejectedMessage"));
             showApplicationTab(true);
             hideQr();
         } else {
-            statusMessageLabel.setText("Pending review by the admin.");
+            statusMessageLabel.setText(I18n.tr("user.status.pendingMessage"));
             showApplicationTab(false);
             hideQr();
         }
@@ -350,14 +371,30 @@ public class UserDashboardController {
         qrImageView.setImage(createQrImage(DUMMY_QR_PAYLOAD, 200, 200));
         qrImageView.setVisible(true);
         qrImageView.setManaged(true);
-        qrHintLabel.setText("Dummy verification QR (same data for all students)");
+        qrHintLabel.setText(I18n.tr("user.status.qrReady"));
     }
 
     private void hideQr() {
         qrImageView.setImage(null);
         qrImageView.setVisible(false);
         qrImageView.setManaged(false);
-        qrHintLabel.setText("QR code appears after acceptance.");
+        qrHintLabel.setText(I18n.tr("user.status.qrPending"));
+    }
+
+    private String localizeStatus(ApplicationStatus status) {
+        if (status == null) {
+            return I18n.tr("status.none");
+        }
+
+        return switch (status) {
+            case PENDING -> I18n.tr("status.pending");
+            case ACCEPTED -> I18n.tr("status.accepted");
+            case REJECTED -> I18n.tr("status.rejected");
+        };
+    }
+
+    private String trResult(OperationResult result) {
+        return I18n.tr(result.getMessageKey(), result.getMessageArgs());
     }
 
     private WritableImage createQrImage(String payload, int width, int height) {

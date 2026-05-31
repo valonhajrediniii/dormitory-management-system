@@ -44,8 +44,8 @@ public class AdminService {
     public OperationResult rejectApplication(long applicationId) {
         boolean updated = applicationDao.markRejected(applicationId);
         return updated
-                ? OperationResult.success("Application rejected.")
-                : OperationResult.failure("Application could not be rejected. It may already be processed.");
+                ? OperationResult.success("service.admin.reject.success")
+                : OperationResult.failure("service.admin.reject.error");
     }
 
     public OperationResult approveApplication(long applicationId, long roomId) {
@@ -57,13 +57,13 @@ public class AdminService {
                 Optional<Room> roomOptional = roomDao.findByIdForUpdate(connection, roomId);
                 if (roomOptional.isEmpty()) {
                     connection.rollback();
-                    return OperationResult.failure("Selected room was not found.");
+                    return OperationResult.failure("service.admin.approve.roomMissing");
                 }
 
                 Room room = roomOptional.get();
                 if (room.getOccupiedBeds() >= room.getCapacity()) {
                     connection.rollback();
-                    return OperationResult.failure("Selected room is already full.");
+                    return OperationResult.failure("service.admin.approve.roomFull");
                 }
 
                 int newOccupiedBeds = room.getOccupiedBeds() + 1;
@@ -73,17 +73,17 @@ public class AdminService {
                 roomDao.updateOccupancy(connection, room.getId(), newOccupiedBeds, newStatus);
 
                 connection.commit();
-                return OperationResult.success("Application approved and room allocated.");
+                return OperationResult.success("service.admin.approve.success");
             } catch (SQLException ex) {
                 connection.rollback();
                 LOGGER.error("Failed approving application {} with room {}", applicationId, roomId, ex);
-                return OperationResult.failure("Approval failed due to database error.");
+                return OperationResult.failure("service.admin.approve.dbError");
             } finally {
                 connection.setAutoCommit(previousAutoCommit);
             }
         } catch (SQLException | IllegalStateException ex) {
             LOGGER.error("Approval transaction setup failed", ex);
-            return OperationResult.failure("Could not process approval right now.");
+            return OperationResult.failure("service.admin.approve.error");
         }
     }
 

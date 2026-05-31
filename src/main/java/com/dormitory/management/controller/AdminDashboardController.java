@@ -6,6 +6,7 @@ import com.dormitory.management.model.PendingApplicationView;
 import com.dormitory.management.model.User;
 import com.dormitory.management.service.AdminService;
 import com.dormitory.management.util.AlertUtil;
+import com.dormitory.management.util.I18n;
 import com.dormitory.management.util.OperationResult;
 import com.dormitory.management.util.SceneManager;
 import com.dormitory.management.util.UserSession;
@@ -27,6 +28,9 @@ public class AdminDashboardController {
 
     @FXML
     private Label adminWelcomeLabel;
+
+    @FXML
+    private ComboBox<String> languageComboBox;
 
     @FXML
     private TableView<PendingApplicationView> applicationsTable;
@@ -92,12 +96,15 @@ public class AdminDashboardController {
     private void initialize() {
         User user = UserSession.getCurrentUser();
         if (user == null) {
-            AlertUtil.error("Session Expired", "Please login again.");
-            SceneManager.switchTo("login.fxml", "Dormitory Management System - Login");
+            AlertUtil.error(I18n.tr("alert.sessionExpired.title"), I18n.tr("alert.sessionExpired.message"));
+            SceneManager.switchTo("login.fxml", "app.title.login");
             return;
         }
 
-        adminWelcomeLabel.setText("Admin: " + user.getFullName());
+        languageComboBox.setItems(FXCollections.observableArrayList(I18n.localizedLanguageOptions()));
+        languageComboBox.setValue(I18n.localizedLanguageForCurrentLocale());
+
+        adminWelcomeLabel.setText(I18n.tr("dashboard.admin.welcome", user.getFullName()));
         configurePendingTable();
         configureAcceptedTable();
         configureComplaintsTable();
@@ -108,12 +115,14 @@ public class AdminDashboardController {
 
         roomSelector.valueProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue == null) {
-                roomDetailsLabel.setText("Select a room to view details.");
+                roomDetailsLabel.setText(I18n.tr("admin.rooms.select"));
                 return;
             }
-            roomDetailsLabel.setText("Dormitory: " + newValue.dormName
-                    + " | Room: " + newValue.roomNumber
-                    + " | Capacity: " + newValue.occupiedBeds + "/" + newValue.capacity);
+            roomDetailsLabel.setText(I18n.tr("admin.rooms.details",
+                    newValue.dormName,
+                    newValue.roomNumber,
+                    newValue.occupiedBeds,
+                    newValue.capacity));
         });
     }
 
@@ -123,21 +132,21 @@ public class AdminDashboardController {
         RoomOption room = roomSelector.getValue();
 
         if (selected == null) {
-            AlertUtil.error("Approve", "Select an application first.");
+            AlertUtil.error(I18n.tr("alert.approve.title"), I18n.tr("alert.approve.selectApplication"));
             return;
         }
 
         if (room == null) {
-            AlertUtil.error("Approve", "Select a room before approving.");
+            AlertUtil.error(I18n.tr("alert.approve.title"), I18n.tr("alert.approve.selectRoom"));
             return;
         }
 
         OperationResult result = adminService.approveApplication(selected.getApplicationId(), room.roomId);
         if (result.isSuccess()) {
-            AlertUtil.info("Approve", result.getMessage());
+            AlertUtil.info(I18n.tr("alert.approve.title"), I18n.tr(result.getMessageKey(), result.getMessageArgs()));
             refreshAll();
         } else {
-            AlertUtil.error("Approve", result.getMessage());
+            AlertUtil.error(I18n.tr("alert.approve.title"), I18n.tr(result.getMessageKey(), result.getMessageArgs()));
         }
     }
 
@@ -145,16 +154,16 @@ public class AdminDashboardController {
     private void onRejectSelected() {
         PendingApplicationView selected = applicationsTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            AlertUtil.error("Reject", "Select an application first.");
+            AlertUtil.error(I18n.tr("alert.reject.title"), I18n.tr("alert.reject.selectApplication"));
             return;
         }
 
         OperationResult result = adminService.rejectApplication(selected.getApplicationId());
         if (result.isSuccess()) {
-            AlertUtil.info("Reject", result.getMessage());
+            AlertUtil.info(I18n.tr("alert.reject.title"), I18n.tr(result.getMessageKey(), result.getMessageArgs()));
             refreshAll();
         } else {
-            AlertUtil.error("Reject", result.getMessage());
+            AlertUtil.error(I18n.tr("alert.reject.title"), I18n.tr(result.getMessageKey(), result.getMessageArgs()));
         }
     }
 
@@ -166,7 +175,18 @@ public class AdminDashboardController {
     @FXML
     private void onLogout() {
         UserSession.clear();
-        SceneManager.switchTo("login.fxml", "Dormitory Management System - Login");
+        SceneManager.switchTo("login.fxml", "app.title.login");
+    }
+
+    @FXML
+    private void onLanguageChanged() {
+        String value = languageComboBox.getValue();
+        if (value == null) {
+            return;
+        }
+
+        I18n.setLocale(I18n.localeFromSelection(value));
+        SceneManager.reloadCurrentScene();
     }
 
     private void configurePendingTable() {
@@ -176,7 +196,7 @@ public class AdminDashboardController {
         yearColumn.setCellValueFactory(new PropertyValueFactory<>("yearOfStudy"));
         dateColumn.setCellValueFactory(cellData -> {
             String value = cellData.getValue().getApplicationDate() == null
-                    ? "-"
+                    ? I18n.tr("status.none")
                     : cellData.getValue().getApplicationDate().format(DATE_TIME_FORMATTER);
             return new javafx.beans.property.SimpleStringProperty(value);
         });
@@ -191,7 +211,7 @@ public class AdminDashboardController {
         acceptedRoomColumn.setCellValueFactory(new PropertyValueFactory<>("roomNumber"));
         acceptedDateColumn.setCellValueFactory(cellData -> {
             String value = cellData.getValue().getApplicationDate() == null
-                    ? "-"
+                    ? I18n.tr("status.none")
                     : cellData.getValue().getApplicationDate().format(DATE_TIME_FORMATTER);
             return new javafx.beans.property.SimpleStringProperty(value);
         });
@@ -217,19 +237,19 @@ public class AdminDashboardController {
                 .toList();
         roomSelector.setItems(FXCollections.observableArrayList(options));
         roomSelector.getSelectionModel().clearSelection();
-        roomDetailsLabel.setText("Select a room to view details.");
+        roomDetailsLabel.setText(I18n.tr("admin.rooms.select"));
     }
 
     private void configureComplaintsTable() {
         complaintDormitoryColumn.setCellValueFactory(cellData -> {
             String dormitory = cellData.getValue().getDormitoryNumber();
             return new javafx.beans.property.SimpleStringProperty(
-                    dormitory == null || dormitory.isBlank() ? "Not assigned" : dormitory);
+                    dormitory == null || dormitory.isBlank() ? I18n.tr("admin.room.notAssigned") : dormitory);
         });
         complaintMessageColumn.setCellValueFactory(new PropertyValueFactory<>("message"));
         complaintDateColumn.setCellValueFactory(cellData -> {
             String value = cellData.getValue().getCreatedAt() == null
-                    ? "-"
+                    ? I18n.tr("status.none")
                     : cellData.getValue().getCreatedAt().format(DATE_TIME_FORMATTER);
             return new javafx.beans.property.SimpleStringProperty(value);
         });
@@ -264,7 +284,7 @@ public class AdminDashboardController {
 
         @Override
         public String toString() {
-            return dormName + " - Room " + roomNumber + " (" + occupiedBeds + "/" + capacity + ")";
+            return I18n.tr("admin.room.option", dormName, roomNumber, occupiedBeds, capacity);
         }
     }
 }

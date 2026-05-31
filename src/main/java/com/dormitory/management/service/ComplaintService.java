@@ -19,27 +19,27 @@ public class ComplaintService {
     public OperationResult submitComplaint(long userId, String message) {
         String trimmedMessage = message == null ? "" : message.trim();
         if (trimmedMessage.isEmpty()) {
-            return OperationResult.failure("Complaint message is required.");
+            return OperationResult.failure("service.complaint.required");
         }
 
         if (trimmedMessage.length() > MAX_COMPLAINT_LENGTH) {
-            return OperationResult.failure("Complaint can have up to " + MAX_COMPLAINT_LENGTH + " characters.");
+            return OperationResult.failure("service.complaint.maxLength", MAX_COMPLAINT_LENGTH);
         }
 
         Optional<Application> applicationOptional = applicationDao.findByUserId(userId);
         if (applicationOptional.isEmpty()) {
-            return OperationResult.failure("You need an approved dormitory assignment before sending complaints.");
+            return OperationResult.failure("service.complaint.assignmentRequired");
         }
 
         Application application = applicationOptional.get();
         if (application.getStatus() != ApplicationStatus.ACCEPTED || application.getDormitoryId() == null) {
-            return OperationResult.failure("Complaints can be sent only after you are assigned to a dormitory.");
+            return OperationResult.failure("service.complaint.onlyAfterAssignment");
         }
 
         boolean created = complaintDao.createComplaint(userId, application.getDormitoryId(), trimmedMessage);
         return created
-                ? OperationResult.success("Complaint submitted successfully.")
-                : OperationResult.failure("Could not submit complaint right now.");
+                ? OperationResult.success("service.complaint.success")
+                : OperationResult.failure("service.complaint.error");
     }
 
     public List<AdminComplaintView> getComplaintsForAdmin() {

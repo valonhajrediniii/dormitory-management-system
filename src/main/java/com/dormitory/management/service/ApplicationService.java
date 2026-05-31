@@ -18,21 +18,21 @@ public class ApplicationService {
 
     public OperationResult submitApplication(long userId, String notes) {
         if (studentProfileDao.findByUserId(userId).isEmpty()) {
-            return OperationResult.failure("Complete and save your profile before applying.");
+            return OperationResult.failure("service.application.profileRequired");
         }
 
         Optional<Application> existing = applicationDao.findByUserId(userId);
         if (existing.isPresent()) {
             ApplicationStatus status = existing.get().getStatus();
             if (status == ApplicationStatus.PENDING || status == ApplicationStatus.ACCEPTED) {
-                return OperationResult.failure("You already have an active application.");
+                return OperationResult.failure("service.application.activeExists");
             }
-            return OperationResult.failure("You already submitted an application. Contact admin for re-application.");
+            return OperationResult.failure("service.application.alreadySubmitted");
         }
 
         boolean created = applicationDao.createPending(userId, notes == null ? "" : notes.trim());
         return created
-                ? OperationResult.success("Application submitted successfully.")
-                : OperationResult.failure("Could not submit application right now.");
+            ? OperationResult.success("service.application.success")
+            : OperationResult.failure("service.application.error");
     }
 }
