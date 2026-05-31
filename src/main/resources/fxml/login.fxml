@@ -2,9 +2,11 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -19,15 +21,20 @@
             <Insets top="30" right="24" bottom="30" left="24"/>
         </padding>
 
-        <Label text="Dormitory Management System" styleClass="title-label"/>
-        <Label text="Sign in to continue" styleClass="subtitle-label"/>
+        <HBox alignment="CENTER_RIGHT" prefWidth="390" styleClass="language-switcher">
+            <Label text="%language.label" styleClass="lang-caption"/>
+            <ComboBox fx:id="languageComboBox" prefWidth="112" onAction="#onLanguageChanged" styleClass="lang-combo"/>
+        </HBox>
+
+        <Label text="%login.title" styleClass="title-label"/>
+        <Label text="%login.subtitle" styleClass="subtitle-label"/>
 
         <VBox spacing="12" styleClass="auth-card login-card" prefWidth="390" maxWidth="390">
-            <Label text="Login" styleClass="section-label"/>
-            <TextField fx:id="loginEmailField" promptText="Email"/>
-            <PasswordField fx:id="loginPasswordField" promptText="Password"/>
-            <Button text="Sign In" onAction="#onLogin" styleClass="primary-button"/>
-            <Button text="Register" onAction="#onOpenRegister" styleClass="big-register-button"/>
+            <Label text="%login.section" styleClass="section-label"/>
+            <TextField fx:id="loginEmailField" promptText="%login.email"/>
+            <PasswordField fx:id="loginPasswordField" promptText="%login.password"/>
+            <Button text="%login.signin" onAction="#onLogin" styleClass="primary-button"/>
+            <Button text="%login.register" onAction="#onOpenRegister" styleClass="big-register-button"/>
         </VBox>
     </VBox>
 </StackPane>

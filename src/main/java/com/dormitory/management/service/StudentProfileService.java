@@ -16,20 +16,20 @@ public class StudentProfileService {
 
     public OperationResult saveProfile(StudentProfile profile) {
         if (profile == null || profile.getUserId() == null) {
-            return OperationResult.failure("Invalid profile payload.");
+            return OperationResult.failure("service.profile.invalidPayload");
         }
 
         if (!ValidationUtil.hasText(profile.getFaculty())) {
-            return OperationResult.failure("Faculty is required.");
+            return OperationResult.failure("service.profile.facultyRequired");
         }
 
         if (profile.getYearOfStudy() < 1 || profile.getYearOfStudy() > 6) {
-            return OperationResult.failure("Year of study must be between 1 and 6.");
+            return OperationResult.failure("service.profile.yearRange");
         }
 
         boolean saved = studentProfileDao.upsert(profile);
         return saved
-                ? OperationResult.success("Profile saved successfully.")
-                : OperationResult.failure("Could not save profile. Check database connection.");
+                ? OperationResult.success("service.profile.success")
+                : OperationResult.failure("service.profile.error");
     }
 }

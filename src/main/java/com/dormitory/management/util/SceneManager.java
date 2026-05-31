@@ -11,6 +11,9 @@ import java.util.Objects;
 public final class SceneManager {
     //Ruan stage kryesor qe perdoret per nderrimin e faqeve
     private static Stage primaryStage;
+    private static String currentFxmlFileName;
+    private static String currentTitleKey;
+    private static Object[] currentTitleArgs = new Object[0];
 
     private SceneManager() {
     }
@@ -19,25 +22,38 @@ public final class SceneManager {
         primaryStage = stage;
     }
 
-    public static void switchTo(String fxmlFileName, String title) {
+    public static void switchTo(String fxmlFileName, String titleKey, Object... titleArgs) {
         if (primaryStage == null) {
             throw new IllegalStateException("Primary stage is not initialized.");
         }
 
         try {
             //Ngarkon FXML-in dhe lidh Css per pamjen e re
-            Parent root = FXMLLoader.load(Objects.requireNonNull(
-                    SceneManager.class.getResource("/fxml/" + fxmlFileName)));
+            FXMLLoader loader = new FXMLLoader(
+                    Objects.requireNonNull(SceneManager.class.getResource("/fxml/" + fxmlFileName)),
+                    I18n.bundle());
+            Parent root = loader.load();
             Scene scene = new Scene(root);
             scene.getStylesheets().add(Objects.requireNonNull(
                     SceneManager.class.getResource("/css/styles.css")).toExternalForm());
 
             //Nderron titullin dhe skenen aktuale
-            primaryStage.setTitle(title);
+            primaryStage.setTitle(I18n.tr(titleKey, titleArgs));
             primaryStage.setScene(scene);
             primaryStage.show();
+
+            currentFxmlFileName = fxmlFileName;
+            currentTitleKey = titleKey;
+            currentTitleArgs = titleArgs == null ? new Object[0] : titleArgs.clone();
         } catch (IOException e) {
-            throw new IllegalStateException("Failed to load FXML: " + fxmlFileName, e);
+            throw new IllegalStateException(I18n.tr("app.error.fxmlLoad", fxmlFileName), e);
         }
+    }
+
+    public static void reloadCurrentScene() {
+        if (currentFxmlFileName == null || currentTitleKey == null) {
+            return;
+        }
+        switchTo(currentFxmlFileName, currentTitleKey, currentTitleArgs);
     }
 }

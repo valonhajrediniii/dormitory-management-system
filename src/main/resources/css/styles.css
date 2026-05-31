@@ -282,3 +282,50 @@
     -fx-background-color: #ddeafe;
 }
 
+.language-switcher {
+    -fx-background-color: linear-gradient(to right, rgba(53, 93, 177, 0.12), rgba(35, 153, 135, 0.11));
+    -fx-background-radius: 999;
+    -fx-padding: 7 10 7 12;
+    -fx-border-color: rgba(68, 109, 189, 0.32);
+    -fx-border-radius: 999;
+    -fx-border-width: 1;
+    -fx-spacing: 8;
+    -fx-alignment: CENTER;
+}
+
+.language-switcher .lang-caption {
+    -fx-text-fill: #224577;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.language-switcher .lang-combo {
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-border-color: #aac2ea;
+    -fx-border-width: 1;
+    -fx-padding: 2 8 2 8;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #173864;
+}
+
+.language-switcher .lang-combo:hover {
+    -fx-border-color: #5f88d8;
+    -fx-background-color: #ffffff;
+}
+
+.language-switcher .lang-combo:focused {
+    -fx-border-color: #416fcd;
+    -fx-effect: dropshadow(gaussian, rgba(65, 111, 205, 0.26), 8, 0.2, 0, 1);
+}
+
+.language-switcher .lang-combo .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.language-switcher .lang-combo .arrow {
+    -fx-background-color: #2f5da5;
+}
+

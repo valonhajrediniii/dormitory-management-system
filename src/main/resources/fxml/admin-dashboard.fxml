@@ -26,18 +26,22 @@
             <padding>
                 <Insets top="18" right="26" bottom="18" left="26"/>
             </padding>
-            <Label text="Admin Dashboard" styleClass="dashboard-title"/>
+            <Label text="%dashboard.admin.title" styleClass="dashboard-title"/>
             <Label fx:id="adminWelcomeLabel" styleClass="dashboard-subtitle"/>
             <HBox HBox.hgrow="ALWAYS"/>
-            <Button text="Refresh" onAction="#onRefreshData" styleClass="outline-button"/>
-            <Button text="Logout" onAction="#onLogout" styleClass="outline-button"/>
+            <HBox styleClass="language-switcher">
+                <Label text="%language.label" styleClass="lang-caption"/>
+                <ComboBox fx:id="languageComboBox" prefWidth="112" onAction="#onLanguageChanged" styleClass="lang-combo"/>
+            </HBox>
+            <Button text="%dashboard.refresh" onAction="#onRefreshData" styleClass="outline-button"/>
+            <Button text="%dashboard.logout" onAction="#onLogout" styleClass="outline-button"/>
         </HBox>
     </top>
 
     <center>
         <TabPane tabClosingPolicy="UNAVAILABLE" styleClass="dashboard-tabs">
             <tabs>
-                <Tab text="Pending Applications">
+                <Tab text="%admin.tab.pending">
                     <content>
                         <HBox spacing="20">
                             <padding>
@@ -45,31 +49,31 @@
                             </padding>
 
                             <VBox spacing="12" styleClass="dashboard-card" HBox.hgrow="ALWAYS">
-                                <Label text="Pending Applications" styleClass="section-label"/>
+                                <Label text="%admin.pending.title" styleClass="section-label"/>
                                 <TableView fx:id="applicationsTable" prefHeight="560" HBox.hgrow="ALWAYS">
                                     <columns>
-                                        <TableColumn fx:id="studentNameColumn" text="Student" prefWidth="190"/>
-                                        <TableColumn fx:id="studentEmailColumn" text="Email" prefWidth="230"/>
-                                        <TableColumn fx:id="facultyColumn" text="Faculty" prefWidth="150"/>
-                                        <TableColumn fx:id="yearColumn" text="Year" prefWidth="90"/>
-                                        <TableColumn fx:id="dateColumn" text="Submitted" prefWidth="160"/>
+                                        <TableColumn fx:id="studentNameColumn" text="%table.student" prefWidth="190"/>
+                                        <TableColumn fx:id="studentEmailColumn" text="%table.email" prefWidth="230"/>
+                                        <TableColumn fx:id="facultyColumn" text="%table.faculty" prefWidth="150"/>
+                                        <TableColumn fx:id="yearColumn" text="%table.year" prefWidth="90"/>
+                                        <TableColumn fx:id="dateColumn" text="%table.submitted" prefWidth="160"/>
                                     </columns>
                                 </TableView>
                             </VBox>
 
                             <VBox spacing="12" styleClass="dashboard-card" prefWidth="330">
-                                <Label text="Allocation Panel" styleClass="section-label"/>
-                                <Label text="Choose a room, then approve the selected student application." styleClass="subtitle-label"/>
+                                <Label text="%admin.allocation.title" styleClass="section-label"/>
+                                <Label text="%admin.allocation.subtitle" styleClass="subtitle-label"/>
                                 <Separator/>
 
-                                <Label text="Assignable Rooms" styleClass="field-label"/>
+                                <Label text="%admin.rooms.label" styleClass="field-label"/>
                                 <ComboBox fx:id="roomSelector" prefWidth="280"/>
 
-                                <Label fx:id="roomDetailsLabel" text="Select a room to view details." wrapText="true"/>
+                                <Label fx:id="roomDetailsLabel" text="%admin.rooms.select" wrapText="true"/>
 
                                 <HBox spacing="10">
-                                    <Button text="Approve" onAction="#onApproveSelected" styleClass="primary-button"/>
-                                    <Button text="Reject" onAction="#onRejectSelected" styleClass="danger-button"/>
+                                    <Button text="%admin.button.approve" onAction="#onApproveSelected" styleClass="primary-button"/>
+                                    <Button text="%admin.button.reject" onAction="#onRejectSelected" styleClass="danger-button"/>
                                 </HBox>
 
                                 <VBox.vgrow>
@@ -81,41 +85,41 @@
                 </Tab>
 
 
-                <Tab text="All Students (Accepted)">
+                <Tab text="%admin.tab.accepted">
                     <content>
                         <VBox spacing="12" styleClass="dashboard-card">
                             <padding>
                                 <Insets top="20" right="22" bottom="20" left="22"/>
                             </padding>
-                            <Label text="Accepted Students" styleClass="section-label"/>
+                            <Label text="%admin.accepted.title" styleClass="section-label"/>
                             <TableView fx:id="acceptedStudentsTable" prefHeight="560">
                                 <columns>
-                                    <TableColumn fx:id="acceptedStudentNameColumn" text="Student" prefWidth="190"/>
-                                    <TableColumn fx:id="acceptedStudentEmailColumn" text="Email" prefWidth="230"/>
-                                    <TableColumn fx:id="acceptedFacultyColumn" text="Faculty" prefWidth="150"/>
-                                    <TableColumn fx:id="acceptedYearColumn" text="Year" prefWidth="80"/>
-                                    <TableColumn fx:id="acceptedDormitoryColumn" text="Dormitory" prefWidth="120"/>
-                                    <TableColumn fx:id="acceptedRoomColumn" text="Room" prefWidth="100"/>
-                                    <TableColumn fx:id="acceptedDateColumn" text="Accepted At" prefWidth="160"/>
+                                    <TableColumn fx:id="acceptedStudentNameColumn" text="%table.student" prefWidth="190"/>
+                                    <TableColumn fx:id="acceptedStudentEmailColumn" text="%table.email" prefWidth="230"/>
+                                    <TableColumn fx:id="acceptedFacultyColumn" text="%table.faculty" prefWidth="150"/>
+                                    <TableColumn fx:id="acceptedYearColumn" text="%table.year" prefWidth="80"/>
+                                    <TableColumn fx:id="acceptedDormitoryColumn" text="%table.dormitory" prefWidth="120"/>
+                                    <TableColumn fx:id="acceptedRoomColumn" text="%table.room" prefWidth="100"/>
+                                    <TableColumn fx:id="acceptedDateColumn" text="%table.acceptedAt" prefWidth="160"/>
                                 </columns>
                             </TableView>
                         </VBox>
                     </content>
                 </Tab>
 
-                <Tab text="Complaints">
+                <Tab text="%admin.tab.complaints">
                     <content>
                         <VBox spacing="12" styleClass="dashboard-card">
                             <padding>
                                 <Insets top="20" right="22" bottom="20" left="22"/>
                             </padding>
-                            <Label text="Student Complaints" styleClass="section-label"/>
-                            <Label text="Admin can read complaints by dormitory. No response is required." styleClass="subtitle-label"/>
+                            <Label text="%admin.complaints.title" styleClass="section-label"/>
+                            <Label text="%admin.complaints.subtitle" styleClass="subtitle-label"/>
                             <TableView fx:id="complaintsTable" prefHeight="560">
                                 <columns>
-                                    <TableColumn fx:id="complaintDormitoryColumn" text="Dormitory" prefWidth="150"/>
-                                    <TableColumn fx:id="complaintMessageColumn" text="Complaint" prefWidth="760"/>
-                                    <TableColumn fx:id="complaintDateColumn" text="Submitted" prefWidth="180"/>
+                                    <TableColumn fx:id="complaintDormitoryColumn" text="%table.dormitory" prefWidth="150"/>
+                                    <TableColumn fx:id="complaintMessageColumn" text="%table.complaint" prefWidth="760"/>
+                                    <TableColumn fx:id="complaintDateColumn" text="%table.submitted" prefWidth="180"/>
                                 </columns>
                             </TableView>
                         </VBox>
