@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -21,7 +22,14 @@
         <Insets top="18" right="18" bottom="18" left="18"/>
     </padding>
 
-    <Label text="%admin.profileModal.title" styleClass="section-label"/>
+    <HBox alignment="CENTER_LEFT" spacing="12">
+        <ImageView fitWidth="104" fitHeight="34" preserveRatio="true" smooth="true" styleClass="modal-logo">
+            <image>
+                <Image url="@../images/up_pr_logo.png"/>
+            </image>
+        </ImageView>
+        <Label text="%admin.profileModal.title" styleClass="section-label"/>
+    </HBox>
     <Label text="%admin.profileModal.subtitle" styleClass="subtitle-label"/>
 
     <HBox spacing="18">

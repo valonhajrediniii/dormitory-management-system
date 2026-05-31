@@ -10,6 +10,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -28,6 +29,11 @@
             <padding>
                 <Insets top="18" right="26" bottom="18" left="26"/>
             </padding>
+            <ImageView fitWidth="146" fitHeight="48" preserveRatio="true" smooth="true" styleClass="topbar-logo">
+                <image>
+                    <Image url="@../images/up_pr_logo.png"/>
+                </image>
+            </ImageView>
             <Label text="%dashboard.user.title" styleClass="dashboard-title"/>
             <Label fx:id="welcomeLabel" styleClass="dashboard-subtitle"/>
             <HBox HBox.hgrow="ALWAYS"/>
@@ -67,7 +73,7 @@
                                     <TextField fx:id="facultyField" promptText="%user.profile.faculty"/>
                                     <TextField fx:id="studyProgramField" promptText="%user.profile.studyProgram"/>
                                     <TextField fx:id="yearOfStudyField" promptText="%user.profile.year"/>
-                                    <TextField fx:id="genderField" promptText="%user.profile.gender"/>
+                                    <ComboBox fx:id="genderComboBox" promptText="%user.profile.gender"/>
                                     <TextField fx:id="phoneField" promptText="%user.profile.phone"/>
                                     <TextField fx:id="cityField" promptText="%user.profile.city"/>
                                     <TextField fx:id="photoUrlField"
