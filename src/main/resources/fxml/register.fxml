@@ -6,6 +6,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
@@ -25,6 +27,12 @@
             <Label text="%language.label" styleClass="lang-caption"/>
             <ComboBox fx:id="languageComboBox" prefWidth="112" onAction="#onLanguageChanged" styleClass="lang-combo"/>
         </HBox>
+
+        <ImageView fitWidth="220" fitHeight="74" preserveRatio="true" smooth="true" styleClass="auth-logo">
+            <image>
+                <Image url="@../images/up_pr_logo.png"/>
+            </image>
+        </ImageView>
 
         <Label text="%register.title" styleClass="title-label"/>
         <Label text="%register.subtitle" styleClass="subtitle-label"/>

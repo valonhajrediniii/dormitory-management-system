@@ -9,6 +9,8 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Priority?>
@@ -26,6 +28,11 @@
             <padding>
                 <Insets top="18" right="26" bottom="18" left="26"/>
             </padding>
+            <ImageView fitWidth="146" fitHeight="48" preserveRatio="true" smooth="true" styleClass="topbar-logo">
+                <image>
+                    <Image url="@../images/up_pr_logo.png"/>
+                </image>
+            </ImageView>
             <Label text="%dashboard.admin.title" styleClass="dashboard-title"/>
             <Label fx:id="adminWelcomeLabel" styleClass="dashboard-subtitle"/>
             <HBox HBox.hgrow="ALWAYS"/>

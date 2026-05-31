@@ -73,7 +73,7 @@ public class UserDashboardController {
     private TextField yearOfStudyField;
 
     @FXML
-    private TextField genderField;
+    private ComboBox<String> genderComboBox;
 
     @FXML
     private TextField phoneField;
@@ -128,6 +128,7 @@ public class UserDashboardController {
 
         languageComboBox.setItems(FXCollections.observableArrayList(I18n.localizedLanguageOptions()));
         languageComboBox.setValue(I18n.localizedLanguageForCurrentLocale());
+        initializeGenderOptions();
 
         welcomeLabel.setText(I18n.tr("dashboard.user.welcome", currentUser.getFullName()));
         profileNameLabel.setText(currentUser.getFullName());
@@ -265,7 +266,7 @@ public class UserDashboardController {
             facultyField.setText(profile.getFaculty());
             studyProgramField.setText(profile.getStudyProgram());
             yearOfStudyField.setText(String.valueOf(profile.getYearOfStudy()));
-            genderField.setText(profile.getGender());
+            genderComboBox.setValue(localizeStoredGender(profile.getGender()));
             phoneField.setText(profile.getPhone());
             cityField.setText(profile.getCity());
             photoUrlField.setText(profile.getPhotoUrl());
@@ -286,7 +287,7 @@ public class UserDashboardController {
         profile.setFaculty(facultyField.getText() == null ? "" : facultyField.getText().trim());
         profile.setStudyProgram(studyProgramField.getText() == null ? "" : studyProgramField.getText().trim());
         profile.setYearOfStudy(yearOfStudy);
-        profile.setGender(genderField.getText() == null ? "" : genderField.getText().trim());
+        profile.setGender(canonicalizeGenderSelection(genderComboBox.getValue()));
         profile.setPhone(phoneField.getText() == null ? "" : phoneField.getText().trim());
         profile.setCity(cityField.getText() == null ? "" : cityField.getText().trim());
         profile.setPhotoUrl(photoUrlField.getText() == null ? "" : photoUrlField.getText().trim());
@@ -412,6 +413,47 @@ public class UserDashboardController {
         } catch (WriterException ex) {
             return createPlaceholderAvatar();
         }
+    }
+
+    private void initializeGenderOptions() {
+        genderComboBox.setItems(FXCollections.observableArrayList(
+                I18n.tr("user.profile.gender.male"),
+                I18n.tr("user.profile.gender.female")
+        ));
+    }
+
+    private String localizeStoredGender(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+
+        String normalized = value.trim().toLowerCase();
+        if (normalized.equals("male") || normalized.equals("mashkull")) {
+            return I18n.tr("user.profile.gender.male");
+        }
+        if (normalized.equals("female") || normalized.equals("femer")) {
+            return I18n.tr("user.profile.gender.female");
+        }
+        return value;
+    }
+
+    private String canonicalizeGenderSelection(String value) {
+        if (value == null || value.isBlank()) {
+            return "";
+        }
+
+        String normalized = value.trim().toLowerCase();
+        if (normalized.equals(I18n.tr("user.profile.gender.male").toLowerCase())
+                || normalized.equals("male")
+                || normalized.equals("mashkull")) {
+            return "Male";
+        }
+        if (normalized.equals(I18n.tr("user.profile.gender.female").toLowerCase())
+                || normalized.equals("female")
+                || normalized.equals("femer")) {
+            return "Female";
+        }
+        return value.trim();
     }
 
     private void updateProfileImage(String photoUrl) {
