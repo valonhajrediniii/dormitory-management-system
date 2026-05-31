@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.dormitory.management.controller.AdminStudentProfileModalController"
+      spacing="12"
+      prefWidth="760"
+      styleClass="dashboard-card">
+
+    <padding>
+        <Insets top="18" right="18" bottom="18" left="18"/>
+    </padding>
+
+    <Label text="%admin.profileModal.title" styleClass="section-label"/>
+    <Label text="%admin.profileModal.subtitle" styleClass="subtitle-label"/>
+
+    <HBox spacing="18">
+        <ImageView fx:id="profileImageView"
+                   fitWidth="140"
+                   fitHeight="140"
+                   preserveRatio="false"
+                   smooth="true"
+                   styleClass="profile-image"/>
+
+        <GridPane hgap="12" vgap="8" HBox.hgrow="ALWAYS">
+            <columnConstraints>
+                <ColumnConstraints minWidth="155" prefWidth="155"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+                <ColumnConstraints minWidth="145" prefWidth="145"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+
+            <Label text="%admin.profileModal.fullName" styleClass="field-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <Label fx:id="fullNameValueLabel" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <Label text="%admin.profileModal.email" styleClass="field-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <Label fx:id="emailValueLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <Label text="%admin.profileModal.faculty" styleClass="field-label" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <Label fx:id="facultyValueLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <Label text="%admin.profileModal.studyProgram" styleClass="field-label" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <Label fx:id="studyProgramValueLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+            <Label text="%admin.profileModal.year" styleClass="field-label" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <Label fx:id="yearValueLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+            <Label text="%admin.profileModal.gender" styleClass="field-label" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+            <Label fx:id="genderValueLabel" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+
+            <Label text="%admin.profileModal.phone" styleClass="field-label" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+            <Label fx:id="phoneValueLabel" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+
+            <Label text="%admin.profileModal.city" styleClass="field-label" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+            <Label fx:id="cityValueLabel" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+
+            <Label text="%admin.profileModal.dormitory" styleClass="field-label" GridPane.rowIndex="3" GridPane.columnIndex="2"/>
+            <Label fx:id="dormitoryValueLabel" GridPane.rowIndex="3" GridPane.columnIndex="3"/>
+
+            <Label text="%admin.profileModal.room" styleClass="field-label" GridPane.rowIndex="4" GridPane.columnIndex="2"/>
+            <Label fx:id="roomValueLabel" GridPane.rowIndex="4" GridPane.columnIndex="3"/>
+
+            <Label text="%admin.profileModal.acceptedAt" styleClass="field-label" GridPane.rowIndex="5" GridPane.columnIndex="2"/>
+            <Label fx:id="acceptedAtValueLabel" GridPane.rowIndex="5" GridPane.columnIndex="3"/>
+        </GridPane>
+    </HBox>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <HBox HBox.hgrow="ALWAYS"/>
+        <Button text="%admin.profileModal.close" onAction="#onClose" styleClass="outline-button"/>
+    </HBox>
+
+</VBox>

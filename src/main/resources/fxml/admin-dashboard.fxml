@@ -92,6 +92,7 @@
                                 <Insets top="20" right="22" bottom="20" left="22"/>
                             </padding>
                             <Label text="%admin.accepted.title" styleClass="section-label"/>
+                            <Label text="%admin.accepted.clickHint" styleClass="subtitle-label"/>
                             <TableView fx:id="acceptedStudentsTable" prefHeight="560">
                                 <columns>
                                     <TableColumn fx:id="acceptedStudentNameColumn" text="%table.student" prefWidth="190"/>

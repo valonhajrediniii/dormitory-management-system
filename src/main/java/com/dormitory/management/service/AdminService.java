@@ -4,11 +4,14 @@ import com.dormitory.management.dao.ApplicationDao;
 import com.dormitory.management.dao.ComplaintDao;
 import com.dormitory.management.dao.DatabaseConnection;
 import com.dormitory.management.dao.RoomDao;
+import com.dormitory.management.dao.StudentProfileDao;
 import com.dormitory.management.model.AdminComplaintView;
+import com.dormitory.management.model.AdminStudentProfileDetails;
 import com.dormitory.management.model.AcceptedStudentView;
 import com.dormitory.management.model.PendingApplicationView;
 import com.dormitory.management.model.Room;
 import com.dormitory.management.model.RoomStatus;
+import com.dormitory.management.model.StudentProfile;
 import com.dormitory.management.util.OperationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +27,7 @@ public class AdminService {
     private final ApplicationDao applicationDao = new ApplicationDao();
     private final RoomDao roomDao = new RoomDao();
     private final ComplaintDao complaintDao = new ComplaintDao();
+    private final StudentProfileDao studentProfileDao = new StudentProfileDao();
 
     public List<PendingApplicationView> getPendingApplications() {
         return applicationDao.findPendingForAdmin();
@@ -31,6 +35,19 @@ public class AdminService {
 
     public List<AcceptedStudentView> getAcceptedStudents() {
         return applicationDao.findAcceptedForAdmin();
+    }
+
+    public AdminStudentProfileDetails getAcceptedStudentProfileDetails(AcceptedStudentView acceptedStudent) {
+        if (acceptedStudent == null) {
+            throw new IllegalArgumentException("Accepted student selection is required.");
+        }
+
+        StudentProfile profile = null;
+        if (acceptedStudent.getUserId() != null) {
+            profile = studentProfileDao.findByUserId(acceptedStudent.getUserId()).orElse(null);
+        }
+
+        return AdminStudentProfileDetails.from(acceptedStudent, profile);
     }
 
     public List<Room> getAssignableRooms() {
