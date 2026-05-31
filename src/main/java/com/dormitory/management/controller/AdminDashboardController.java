@@ -2,6 +2,7 @@ package com.dormitory.management.controller;
 
 import com.dormitory.management.model.AcceptedStudentView;
 import com.dormitory.management.model.AdminComplaintView;
+import com.dormitory.management.model.AdminStudentProfileDetails;
 import com.dormitory.management.model.PendingApplicationView;
 import com.dormitory.management.model.User;
 import com.dormitory.management.service.AdminService;
@@ -12,14 +13,25 @@ import com.dormitory.management.util.SceneManager;
 import com.dormitory.management.util.UserSession;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 public class AdminDashboardController {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -215,6 +227,18 @@ public class AdminDashboardController {
                     : cellData.getValue().getApplicationDate().format(DATE_TIME_FORMATTER);
             return new javafx.beans.property.SimpleStringProperty(value);
         });
+
+        acceptedStudentsTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        acceptedStudentsTable.setRowFactory(tableView -> {
+            TableRow<AcceptedStudentView> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getButton() != MouseButton.PRIMARY || row.isEmpty()) {
+                    return;
+                }
+                openAcceptedStudentProfileModal(row.getItem());
+            });
+            return row;
+        });
     }
 
     private void loadPendingApplications() {
@@ -265,6 +289,37 @@ public class AdminDashboardController {
         loadAcceptedStudents();
         loadComplaints();
         loadRooms();
+    }
+
+    private void openAcceptedStudentProfileModal(AcceptedStudentView selectedStudent) {
+        try {
+            AdminStudentProfileDetails details = adminService.getAcceptedStudentProfileDetails(selectedStudent);
+
+            FXMLLoader loader = new FXMLLoader(
+                    Objects.requireNonNull(getClass().getResource("/fxml/admin-student-profile-modal.fxml")),
+                    I18n.bundle());
+            Parent root = loader.load();
+
+            AdminStudentProfileModalController modalController = loader.getController();
+            modalController.setDetails(details);
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.WINDOW_MODAL);
+            Window owner = acceptedStudentsTable.getScene() == null ? null : acceptedStudentsTable.getScene().getWindow();
+            if (owner != null) {
+                stage.initOwner(owner);
+            }
+            stage.setTitle(I18n.tr("admin.profileModal.title"));
+
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(Objects.requireNonNull(
+                    getClass().getResource("/css/styles.css")).toExternalForm());
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.showAndWait();
+        } catch (IOException | IllegalStateException ex) {
+            AlertUtil.error(I18n.tr("alert.profile.title"), I18n.tr("admin.profileModal.loadError"));
+        }
     }
 
     private static class RoomOption {
